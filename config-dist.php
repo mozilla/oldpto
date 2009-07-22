@@ -23,7 +23,7 @@ $hr_managers = array(
   "karen@mozilla.com"
 );
 
-# Specified in RFC address format. On address per array element, please.
+# Specified in RFC address format. One address per array element, please.
 $notified_people = array(
   "Karen Prescott <karen@mozilla.com>",
   "Erica McClure <erica@mozilla.com>"

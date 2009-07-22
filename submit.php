@@ -119,7 +119,7 @@ if (!DISABLE_MAIL) {
     </p>
     <?php
       if (!empty($banned)) {
-        print "<p>You also attempted to email the following addresses, which are banned. Remember, everytime you annoy every single individual about your PTO, a kitten dies!</p>";
+        print "<p>You also attempted to email the following addresses, which are banned. Remember, everytime you annoy every single individual about your PTO, a kitten or puppy dies! And you don't want that, <em>do you?</em></p>";
         print "<pre>". htmlspecialchars(implode(", ", $banned)) ."</pre>";
       }
     ?>

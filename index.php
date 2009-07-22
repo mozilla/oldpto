@@ -49,7 +49,7 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
 
   <body>
     <h1>PTO Notification</h1>
-    <p>Herro, <?= str_replace("@mozilla.com", '', $notifier_email) ?>. Dis iz only fur testin. U can't haz real vakashen yeaht. I don't wantz too shpam ur managerz, so dey not maild.</p>
+    <p>O hai, <?= str_replace("@mozilla.com", '', $notifier_email) ?>. Submit your PTO notification here. All your PTO are belong to us.</p>
     <form action="submit.php" method="post" name="pto-notify">
       <table><tbody>
       <tr>
