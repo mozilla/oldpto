@@ -15,7 +15,7 @@ function ldap_find($connection, $filter, $attributes) {
 function maketime($slashed_date) {
   $t = strptime($slashed_date, "%m/%d/%Y");
   $mtime = mktime($t["tm_hour"], $t["tm_min"], $t["tm_sec"],
-                  $t["tm_mon"] + 1, $t["tm_mday"], $t["tm_year"] + 1900)0;
+                  $t["tm_mon"] + 1, $t["tm_mday"], $t["tm_year"] + 1900);
   if (DEBUG_ON) {
     fb($slashed_date, $t, $mtime);
   }
