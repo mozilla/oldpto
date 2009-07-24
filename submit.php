@@ -113,12 +113,13 @@ if (!DISABLE_MAIL) {
         print "OH NOES! I CAN'T SENDZ OUT MAILZ.";
       } elseif (!$query && $mail_result) {
         print "I SENTZ MAIL BUT SQL FAIL :(";
-        if (DEBUG_ON) {
-          fb(mysql_errno() .": ". mysql_error());
-          fb($query_string);
-        }
       } else /* if (!$query && !$mail_result) */ {
         print "<em>Someone set up us DB and mail fail! We get signal.</em> How are you, gentlemen!! All your PTO are belong to us. You have no chance to vacation make your time. <em>Mail kourge@mozilla.com. For great justice.</em";
+      }
+
+      if (!$query && DEBUG_ON) {
+        fb(mysql_errno() .": ". mysql_error());
+        fb($query_string);
       }
     ?>
     </p>
