@@ -29,7 +29,7 @@ $hr_managers = array(
 # Specified in RFC address format. One address per array element, please.
 $notified_people = array(
   "Karen Prescott <karen@mozilla.com>",
-  "Erica McClure <erica@mozilla.com>"
+  "Erica McClure <emcclure@mozilla.com>"
 );
 
 # Set to "submitter" to mail on behalf of the person submitting the notification
