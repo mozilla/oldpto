@@ -47,8 +47,10 @@ while ($check = array_pop($notified_people)) {
 }
 $notified_people = $allowed;
 
-$start = maketime($_POST["start"]);
-$end = maketime($_POST["end"]);
+$start_time = isset($_POST["start_time"]) ? $_POST["start_time"] : "00:00";
+$end_time = isset($_POST["end_time"]) ? $_POST["end_time"] : "00:00";
+$start = maketime($_POST["start"] . $start_time);
+$end = maketime($_POST["end"] . $end_time);
 
 if ($from == "submitter") {
   $from = $notifier_name .' <'. $notifier_email .'>';

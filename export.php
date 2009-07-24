@@ -64,8 +64,7 @@ if (function_exists($output_function)){
     jQuery.noConflict();
     (function($) {
       $(document).ready(function() {
-        $("#view-all").click(function() fetch()).click();
-        // Fire "View All"
+        $("#view-all").click(function() fetch()).click(); // Fire "View All"
 
         $("#view-today").click(function() {
           var [from, to] = [new Date(), new Date()];
@@ -80,7 +79,7 @@ if (function_exists($output_function)){
           // The midnight between Sunday and Monday is the cutoff.
           // getDay() returns 0 for Sunday, 1 for Monday, etc.
           from = from.valueOf() - (1000 * 60 * 60 * 24 * (from.getDay() - 1));
-          to = to.valueOf() + (1000 * 60 * 60 * 24 * (7 - to.getDay() + 1));
+          to = to.valueOf() + (1000 * 60 * 60 * 24 * (7 - (to.getDay() - 1)));
           fetch({from: from, to: to});
         });
 
@@ -134,7 +133,7 @@ if (function_exists($output_function)){
         });
 
         var fdate = function(x) {
-          return $.strftime({format: '%Y-%m-%d', dateTime: new Date(x * 1000)});
+          return $.strftime({format: '%Y-%m-%d %H:%M', dateTime: new Date(x * 1000)});
         };
         
         var K = function(x) x;

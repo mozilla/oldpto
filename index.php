@@ -32,9 +32,12 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <script src="./js/jquery-1.3.2.min.js" type="text/javascript"></script>
     <script src="./js/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
-    <script src="./js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="./js/ui.dropslide.js" type="text/javascript"></script>
+    <script src="./js/ui.timepickr.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="./css/style.css"/>
     <link rel="stylesheet" type="text/css" href="./css/redmond/jquery-ui-1.7.2.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/ui.dropslide.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/ui.timepickr.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" /> 
 
     <script type='text/javascript'>
@@ -42,6 +45,7 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
     (function($) {
       $(document).ready(function() {
         $("#start, #end").datepicker();
+        $("#start-time, #end-time").timepickr();
       });
     })(jQuery);
     </script>
@@ -54,11 +58,17 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
       <table><tbody>
       <tr>
         <td><label for="start">Start</label></td>
-        <td><input type="text" id="start" name="start" /></td>
+        <td>
+          <input type="text" id="start" name="start" /> at 
+          <input type="text" id="start-time" name="start_time" size="5" value="00:00" />
+        </td>
       </tr>
       <tr>
         <td><label for="end">End</label></td>
-        <td><input type="text" id="end" name="end" /></td>
+        <td>
+          <input type="text" id="end" name="end" /> at 
+          <input type="text" id="end-time" name="end_tme" size="5" value="00:00" />
+        </td>
       </tr>
       <tr>
         <td><label for="people">People to Notify</label></td>
