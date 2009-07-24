@@ -77,7 +77,7 @@ if (!DISABLE_DB) {
     (string)$end .', '.
     (string)time() .
     ");"
-  );
+  ;
   $query = mysql_query($query_string);
 }
 
