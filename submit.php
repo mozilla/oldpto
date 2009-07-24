@@ -67,7 +67,7 @@ foreach ($tokens as $token => $replacement) {
 }
 
 $c = mysql_connect($mysql["host"], $mysql["user"], $mysql["password"]);
-mysql_select_db("k_pto");
+mysql_select_db($mysql["database"]);
 if (!DISABLE_DB) {
   $query = mysql_query(
     "INSERT INTO pto (person, reason, start, end, added) VALUES(".
