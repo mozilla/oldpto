@@ -69,7 +69,7 @@ foreach ($tokens as $token => $replacement) {
 $c = mysql_connect($mysql["host"], $mysql["user"], $mysql["password"]);
 mysql_select_db($mysql["database"]);
 if (!DISABLE_DB) {
-  $query = mysql_query(
+  $query_string = 
     "INSERT INTO pto (person, reason, start, end, added) VALUES(".
     '"'. $notifier_email .'", '.
     '"'. mysql_real_escape_string($_POST["reason"]) .'", '.
@@ -78,6 +78,7 @@ if (!DISABLE_DB) {
     (string)time() .
     ");"
   );
+  $query = mysql_query($query_string);
 }
 
 if (!DISABLE_MAIL) {
@@ -112,6 +113,10 @@ if (!DISABLE_MAIL) {
         print "OH NOES! I CAN'T SENDZ OUT MAILZ.";
       } elseif (!$query && $mail_result) {
         print "I SENTZ MAIL BUT SQL FAIL :(";
+        if (DEBUG_ON) {
+          fb(mysql_errno() .": ". mysql_error());
+          fb($query_string);
+        }
       } else /* if (!$query && !$mail_result) */ {
         print "<em>Someone set up us DB and mail fail! We get signal.</em> How are you, gentlemen!! All your PTO are belong to us. You have no chance to vacation make your time. <em>Mail kourge@mozilla.com. For great justice.</em";
       }

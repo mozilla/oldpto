@@ -17,6 +17,9 @@ $mysql = array(
 define(DISABLE_MAIL, FALSE);
 define(DISABLE_DB, FALSE);
 
+# Set below to TRUE to see MySQL error messages and query strings sent.
+define(DEBUG_ON, FALSE);
+
 # Specify HR managers with email address only.
 $hr_managers = array(
   "dportillo@mozilla.com",
