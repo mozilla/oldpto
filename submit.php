@@ -30,7 +30,7 @@ if (!empty($_POST["people"])) {
 }
 
 // Optionally "cc" the notifier. Yes, it's not real CC.
-if ($_POST["cc"] == "1") {
+if (isset($_POST["cc"]) && $_POST["cc"] == "1") {
   $notified_people[] = $notifier_name .' <'. $notifier_email .'>';
 }
 
