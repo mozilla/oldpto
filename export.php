@@ -20,7 +20,7 @@ preg_match("/mail=([a-z]+@mozilla\\.com),/", $manager_dn, $matches);
 $manager_email = $matches[1];
 $is_hr = in_array($manager_email, $hr_managers);
 // Exclude details from non-HR personnel
-$fields = $is_hr ? '*' : "id, person, added, start, end";
+$fields = $is_hr ? '*' : "id, person, added, hours, start, end";
 
 $query = mysql_query(
   "SELECT ". $fields ." FROM pto ". $conditions ."ORDER BY added DESC;"
@@ -120,9 +120,9 @@ if (function_exists($output_function)){
       }
 
       function inject(data) {
-        var preferredOrder = "id|person|added|start|end|details".split('|');
+        var preferredOrder = "id|person|added|hours|start|end|details".split('|');
         var fieldNames = {
-          id: "ID", person: "Who", added: "Added on",
+          id: "ID", person: "Who", added: "Added on", hours: "Hours",
           start: "Start", end: "End", details: "Details"
         };
         var presentFields = [];
@@ -133,12 +133,12 @@ if (function_exists($output_function)){
         });
 
         var fdate = function(x) {
-          return $.strftime({format: '%Y-%m-%d %H:%M', dateTime: new Date(x * 1000)});
+          return $.strftime({format: '%Y-%m-%d', dateTime: new Date(x * 1000)});
         };
         
         var K = function(x) { return x; };
         var formatters = {
-          id: K, person: function(x) x.replace(/@mozilla\.com$/, ''),
+          id: K, person: function(x) x.replace(/@mozilla\.com$/, ''), hours: K,
           added: fdate, start: fdate, end: fdate, details: K
         };
 

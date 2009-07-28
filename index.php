@@ -57,17 +57,23 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
     <form action="submit.php" method="post" name="pto-notify">
       <table><tbody>
       <tr>
+        <td><label for="hours">Total Hours</label></td>
+        <td>
+          <input type="text" id="hours" name="hours" size="2" />
+        </td>
+      </tr>
+      <tr>
         <td><label for="start">Start</label></td>
         <td>
-          <input type="text" id="start" name="start" size="10" /> at 
-          <input type="text" id="start-time" name="start_time" size="8" value="00:00 am" />
+          <input type="text" id="start" name="start" size="10" /><!-- at 
+          <input type="text" id="start-time" name="start_time" size="8" value="00:00 am" />-->
         </td>
       </tr>
       <tr>
         <td><label for="end">End</label></td>
         <td>
-          <input type="text" id="end" name="end" size="10" /> at 
-          <input type="text" id="end-time" name="end_tme" size="8" value="00:00 am" />
+          <input type="text" id="end" name="end" size="10" /><!-- at
+          <input type="text" id="end-time" name="end_tme" size="8" value="00:00 am" />-->
         </td>
       </tr>
       <tr>

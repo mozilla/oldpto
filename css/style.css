@@ -38,6 +38,14 @@ span.ui-timepickr {
   background-color: #DDD;
 }
 
+td {
+  vertical-align: top;
+}
+
+tr td:first-child label {
+  font-weight: bold;
+}
+
 #pto tr td {
   padding: 0.3em;
 }

@@ -36,10 +36,10 @@ $notified_people = array(
 $from = "submitter";
 
 # The following template variables are available:
-# %notifier%, %start%, %end%, %details%
+# %notifier%, %hours%, %start%, %end%, %details%
 $subject = "PTO notification from %notifier%";
 $body = <<<EOD
-%notifier% has submitted PTO from %start% to %end% with the details:
+%notifier% has submitted %hours% hours of PTO from %start% to %end% with the details:
 %details%
 
 - The Happy PTO Managing Intranet App

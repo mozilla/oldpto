@@ -47,10 +47,11 @@ while ($check = array_pop($notified_people)) {
 }
 $notified_people = $allowed;
 
-$start_time = isset($_POST["start_time"]) ? $_POST["start_time"] : "00:00 am";
-$end_time = isset($_POST["end_time"]) ? $_POST["end_time"] : "00:00 am";
-$start = maketime($_POST["start"] . $start_time);
-$end = maketime($_POST["end"] . $end_time);
+$hours = (float)$_POST["hours"];
+# $start_time = isset($_POST["start_time"]) ? $_POST["start_time"] : "00:00 am";
+# $end_time = isset($_POST["end_time"]) ? $_POST["end_time"] : "00:00 am";
+$start = maketime($_POST["start"]);
+$end = maketime($_POST["end"]);
 
 if ($from == "submitter") {
   $from = $notifier_name .' <'. $notifier_email .'>';
@@ -58,6 +59,7 @@ if ($from == "submitter") {
 
 $tokens = array(
   "%notifier%" => $notifier_name,
+  "%hours%" => $hours,
   "%start%" => $_POST["start"],
   "%end%" => $_POST["end"],
   "%details%" => $_POST["details"]
@@ -72,9 +74,10 @@ $c = mysql_connect($mysql["host"], $mysql["user"], $mysql["password"]);
 mysql_select_db($mysql["database"]);
 if (!DISABLE_DB) {
   $query_string = 
-    "INSERT INTO pto (person, details, start, end, added) VALUES(".
+    "INSERT INTO pto (person, details, hours, start, end, added) VALUES(".
     '"'. $notifier_email .'", '.
     '"'. mysql_real_escape_string($_POST["details"]) .'", '.
+    (string)$hours .', '.
     (string)$start .', '.
     (string)$end .', '.
     (string)time() .
