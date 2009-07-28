@@ -20,7 +20,7 @@ define("DISABLE_DB", FALSE);
 # Set below to TRUE to see MySQL error messages and query strings sent.
 define("DEBUG_ON", FALSE);
 
-# Specify HR managers with email address only.
+# Specify HR managers with email addresses only.
 $hr_managers = array(
   "dportillo@mozilla.com",
   "karen@mozilla.com"
@@ -36,11 +36,11 @@ $notified_people = array(
 $from = "submitter";
 
 # The following template variables are available:
-# %notifier%, %start%, %end%, %reason%
+# %notifier%, %start%, %end%, %details%
 $subject = "PTO notification from %notifier%";
 $body = <<<EOD
-%notifier% has submitted PTO from %start% to %end% with the reason:
-%reason%
+%notifier% has submitted PTO from %start% to %end% with the details:
+%details%
 
 - The Happy PTO Managing Intranet App
 EOD;

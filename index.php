@@ -45,7 +45,7 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
     (function($) {
       $(document).ready(function() {
         $("#start, #end").datepicker();
-        $("#start-time, #end-time").timepickr();
+        $("#start-time, #end-time").timepickr({convention: 12});
       });
     })(jQuery);
     </script>
@@ -59,15 +59,15 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
       <tr>
         <td><label for="start">Start</label></td>
         <td>
-          <input type="text" id="start" name="start" /> at 
-          <input type="text" id="start-time" name="start_time" size="5" value="00:00" />
+          <input type="text" id="start" name="start" size="10" /> at 
+          <input type="text" id="start-time" name="start_time" size="8" value="00:00 am" />
         </td>
       </tr>
       <tr>
         <td><label for="end">End</label></td>
         <td>
-          <input type="text" id="end" name="end" /> at 
-          <input type="text" id="end-time" name="end_tme" size="5" value="00:00" />
+          <input type="text" id="end" name="end" size="10" /> at 
+          <input type="text" id="end-time" name="end_tme" size="8" value="00:00 am" />
         </td>
       </tr>
       <tr>
@@ -79,8 +79,8 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
         </td>
       </tr>
       <tr>
-        <td><label for="reason">Reason</label><br />(optional)</td>
-        <td><textarea name="reason" id="reason" cols="80" rows="10"></textarea></td>
+        <td><label for="details">Details</label><br />(optional)</td>
+        <td><textarea name="details" id="details" cols="80" rows="10"></textarea></td>
       </tr>
       </tbody></table>
       <input type="submit" value="Submit" />

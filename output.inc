@@ -20,7 +20,7 @@ function output_csv($data) {
   
   header("Content-Type: ". ($correct_mime ? "text/csv" : "text/plain"));
   $f = fopen("php://output", 'w');
-  $fields = array("id", "person", "added", "reason", "start", "end");
+  $fields = array("id", "person", "added", "details", "start", "end");
   $dates = array("added", "start", "end");
   fputcsv($f, array_map("ucwords", $fields));
   foreach ($data as $pto) {

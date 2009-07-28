@@ -1,12 +1,18 @@
 <?php
+
+function ask() {
+  header('WWW-Authenticate: Basic realm="Mozilla Corporation - LDAP Login"');
+}
+
 function wail_and_bail() {
   header('HTTP/1.0 401 Unauthorized');
+  ask();
   print "<h1>401 Unauthorized</h1>";
   die;
 }
 
 if (!isset($_SERVER["PHP_AUTH_USER"])) {
-  header('WWW-Authenticate: Basic realm="Mozilla Corporation - LDAP Login"');
+  ask();
   wail_and_bail();
 } else {
   // Check for validity of login

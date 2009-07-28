@@ -19,7 +19,7 @@ $manager_dn = $data[0]["manager"][0];
 preg_match("/mail=([a-z]+@mozilla\\.com),/", $manager_dn, $matches);
 $manager_email = $matches[1];
 $is_hr = in_array($manager_email, $hr_managers);
-// Exclude reason from non-HR personnel
+// Exclude details from non-HR personnel
 $fields = $is_hr ? '*' : "id, person, added, start, end";
 
 $query = mysql_query(
@@ -120,10 +120,10 @@ if (function_exists($output_function)){
       }
 
       function inject(data) {
-        var preferredOrder = "id|person|added|start|end|reason".split('|');
+        var preferredOrder = "id|person|added|start|end|details".split('|');
         var fieldNames = {
           id: "ID", person: "Who", added: "Added on",
-          start: "Start", end: "End", reason: "Reason"
+          start: "Start", end: "End", details: "Details"
         };
         var presentFields = [];
         for (var field in data[0]) { presentFields.push(field); }
@@ -136,10 +136,10 @@ if (function_exists($output_function)){
           return $.strftime({format: '%Y-%m-%d %H:%M', dateTime: new Date(x * 1000)});
         };
         
-        var K = function(x) x;
+        var K = function(x) { return x; };
         var formatters = {
           id: K, person: function(x) x.replace(/@mozilla\.com$/, ''),
-          added: fdate, start: fdate, end: fdate, reason: K // properly escape reason?
+          added: fdate, start: fdate, end: fdate, details: K
         };
 
         $("#pto table").remove();
