@@ -44,8 +44,10 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
     jQuery.noConflict();
     (function($) {
       $(document).ready(function() {
-        $("#start, #end").datepicker();
-        $("#start-time, #end-time").timepickr({convention: 12});
+        $("#start, #end").datepicker({
+          onClose: function() { $(this).focus(); }
+        });
+        // $("#start-time, #end-time").timepickr({convention: 12});
       });
     })(jQuery);
     </script>
