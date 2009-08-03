@@ -5,9 +5,9 @@ require_once("auth.php");
 
 $notifier_email = $_SERVER["PHP_AUTH_USER"];
 $data = ldap_find(
-  $connection, "mail=". $notifier_email, array("givenName", "sn", "manager")
+  $connection, "mail=". $notifier_email, array("givenName", "sn", "manager", "cn")
 );
-$notifier_name = ldap_fullname($data[0]);
+$notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
 // "OMG, not querying LDAP for the real email? That's cheating!"
@@ -17,9 +17,9 @@ $manager_email = $matches[1];
 $data = ldap_find(
   $connection,
   "mail=". $manager_email,
-  array("givenName", "sn")
+  array("cn")
 );
-$manager_name = ldap_fullname($data[0]);
+$manager_name = $data[0]["cn"][0];
 
 // Add the manager
 $notified_people[] = $manager_name ." <". $manager_email .'>';
@@ -38,11 +38,13 @@ $banned = array();
 $allowed = array();
 while ($check = array_pop($notified_people)) {
   $match = null;
-  preg_match("/^all.*@mozilla\\.com/", $check, $match);
-  if (empty($match)) {
-    $allowed[] = $check;
-  } else {
+  preg_match("/<?(.+@mozilla\\.com)/", $check, $match);
+  $bracket = strpos($match[1], '<');
+  $address = $bracket === FALSE ? $match[1] : substr($match[1], $bracket + 1);
+  if (in_array($address, $mail_blacklist)) {
     $banned[] = $check;
+  } else {
+    $allowed[] = $check;
   }
 }
 $notified_people = $allowed;

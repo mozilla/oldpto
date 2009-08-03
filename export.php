@@ -11,8 +11,8 @@ mysql_select_db($mysql["database"]);
 require_once("filtering.inc");
 
 $notifier_email = $_SERVER["PHP_AUTH_USER"];
-$data = ldap_find($connection, "mail=". $notifier_email, array("manager"));
-$notifier_name = ldap_fullname($data[0]);
+$data = ldap_find($connection, "mail=". $notifier_email, array("manager", "cn"));
+$notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
 // "OMG, not querying LDAP for the real email? That's cheating!"

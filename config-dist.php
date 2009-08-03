@@ -32,6 +32,12 @@ $notified_people = array(
   "Erica McClure <emcclure@mozilla.com>"
 );
 
+# Specify addesses that aren't allowed in the additional notified people field.
+$mail_blacklist = array(
+  "all@mozilla.com",
+  "all-mv@mozilla.com"
+);
+
 # Set to "submitter" to mail on behalf of the person submitting the notification
 $from = "submitter";
 

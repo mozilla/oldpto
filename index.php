@@ -6,10 +6,10 @@ require_once("auth.php");
 $data = ldap_find(
   $connection,
   "mail=". $_SERVER["PHP_AUTH_USER"], 
-  array("givenName", "sn", "manager")
+  array("cn", "manager")
 );
 $notifier_email = $_SERVER["PHP_AUTH_USER"];
-$notifier_name = ldap_fullname($data[0]);
+$notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
 preg_match("/mail=([a-z]+@mozilla\\.com),/", $manager_dn, $matches);
@@ -18,9 +18,9 @@ $manager_email = $matches[1];
 $data = ldap_find(
   $connection,
   "mail=". $manager_email,
-  array("givenName", "sn")
+  array("cn")
 );
-$manager_name = ldap_fullname($data[0]);
+$manager_name = $data[0]["cn"][0];
 
 $notified_people[] = $manager_name ." <". $manager_email .'>';
 
