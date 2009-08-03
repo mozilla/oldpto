@@ -23,37 +23,9 @@ $data = ldap_find(
 $manager_name = ldap_fullname($data[0]);
 
 $notified_people[] = $manager_name ." <". $manager_email .'>';
+
+require_once "./templates/header.php";
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" dir="ltr">
-  <head>
-    <title>PTO Notification<title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <script src="./js/jquery-1.3.2.min.js" type="text/javascript"></script>
-    <script src="./js/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
-    <script src="./js/ui.dropslide.js" type="text/javascript"></script>
-    <script src="./js/ui.timepickr.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/redmond/jquery-ui-1.7.2.custom.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/ui.dropslide.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/ui.timepickr.css"/>
-    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" /> 
-
-    <script type='text/javascript'>
-    jQuery.noConflict();
-    (function($) {
-      $(document).ready(function() {
-        $("#start, #end").datepicker({
-          onClose: function() { $(this).focus(); }
-        });
-        // $("#start-time, #end-time").timepickr({convention: 12});
-      });
-    })(jQuery);
-    </script>
-  </head>
-
-  <body>
     <h1>PTO Notification</h1>
     <p>O hai, <?= str_replace("@mozilla.com", '', $notifier_email) ?>. Submit your PTO notification here. All your PTO are belong to us.</p>
     <form action="submit.php" method="post" name="pto-notify">
@@ -93,5 +65,17 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
       </tbody></table>
       <input type="submit" value="Submit" />
     </form>
-  </body>
-</html>
+
+  <script type='text/javascript'>
+  jQuery.noConflict();
+  (function($) {
+    $(document).ready(function() {
+      $("#start, #end").datepicker({
+        onClose: function() { $(this).focus(); }
+      });
+      // $("#start-time, #end-time").timepickr({convention: 12});
+    });
+  })(jQuery);
+  </script>
+
+<?php require_once "./templates/footer.php"; ?>

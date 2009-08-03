@@ -22,7 +22,7 @@ $data = ldap_find(
 $manager_name = ldap_fullname($data[0]);
 
 // Add the manager
-# $notified_people[] = $manager_name ." <". $manager_email .'>';
+$notified_people[] = $manager_name ." <". $manager_email .'>';
 // Merge additional inputted people to notify
 if (!empty($_POST["people"])) {
   $people = array_map("trim", explode(",", $_POST["people"]));
@@ -38,7 +38,7 @@ $banned = array();
 $allowed = array();
 while ($check = array_pop($notified_people)) {
   $match = null;
-  preg_match("/all.*@mozilla\\.com/", $check, $match);
+  preg_match("/^all.*@mozilla\\.com/", $check, $match);
   if (empty($match)) {
     $allowed[] = $check;
   } else {
@@ -90,25 +90,8 @@ if (!DISABLE_MAIL) {
   $mail_result = mail(implode(", ", $notified_people), $subject, $body, "From: ". $from);
 }
 
+require_once "./templates/header.php";
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" dir="ltr">
-  <head>
-    <title>PTO Submitted<title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <script src="./js/jquery-1.3.2.min.js" type="text/javascript"></script>
-    <script src="./js/jquery-ui-1.7.2.custom.min.js" type="text/javascript"></script>
-    <script src="./js/jquery.cookie.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/redmond/jquery-ui-1.7.2.custom.css"/>
-    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" /> 
-
-    <script type='text/javascript'>
-    </script>
-  </head>
-
-  <body>
     <h1>PTO Notification</h1>
     <p>
     <?php
@@ -119,7 +102,7 @@ if (!DISABLE_MAIL) {
       } elseif (!$query && $mail_result) {
         print "I SENTZ MAIL BUT SQL FAIL :(";
       } else /* if (!$query && !$mail_result) */ {
-        print "<em>Someone set up us DB and mail fail! We get signal.</em> How are you, gentlemen!! All your PTO are belong to us. You have no chance to vacation make your time. <em>Mail kourge@mozilla.com. For great justice.</em";
+        print "<em>Someone set up us DB and mail fail! We get signal.</em> How are you, gentlemen!! All your PTO are belong to us. You have no chance to vacation make your time. <em>Mail kourge@mozilla.com. For great justice.</em>";
       }
 
       if (!$query && DEBUG_ON) {
@@ -134,5 +117,5 @@ if (!DISABLE_MAIL) {
         print "<pre>". htmlspecialchars(implode(", ", $banned)) ."</pre>";
       }
     ?>
-  </body>
-</html>
+
+<?php require_once "./templates/footer.php"; ?>
