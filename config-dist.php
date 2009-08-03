@@ -45,3 +45,10 @@ $body = <<<EOD
 - The Happy PTO Managing Intranet App
 EOD;
 
+$single_day_body = <<<EOD
+%notifier% has submitted %hours% hours of PTO on %start% with the details:
+%details%
+
+- The Happy PTO Managing Intranet App
+EOD;
+

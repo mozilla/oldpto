@@ -28,7 +28,7 @@ function output_csv($data) {
     foreach ($fields as $field) {
       // Format the timestamp as an Excel date
       if (in_array($field, array("added", "start", "end"))) {
-        $pto[$field] = date("m/d/y H:i", $pto[$field]);
+        $pto[$field] = date("m/d/y", $pto[$field]);
       }
       $row[] = $pto[$field];
     }

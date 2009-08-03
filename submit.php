@@ -65,6 +65,15 @@ $tokens = array(
   "%details%" => $_POST["details"]
 );
 
+$single_day_fix = FALSE;
+// Single day PTO
+if ($start == $end) {
+  $single_day_fix = TRUE;
+  // Special case of "on MM/DD/YYYY" instead of "from MM/DD/YYYY to MM/DD/YYYY".
+  $body = $single_day_body;
+  // Expand single day to a timerange of a whole day.
+  $end += (1 * 60 * 60 * 24) - 1;
+}
 foreach ($tokens as $token => $replacement) {
   $subject = str_replace($token, $replacement, $subject);
   $body = str_replace($token, $replacement, $body);
