@@ -27,7 +27,7 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
 require_once "./templates/header.php";
 ?>
     <h1>PTO Notification</h1>
-    <p>O hai, <?= str_replace("@mozilla.com", '', $notifier_email) ?>. Submit your PTO notification here. All your PTO are belong to us.</p>
+    <p>O hai, <?= str_replace("@mozilla.com", '', $notifier_email) ?>. Submit your PTO notification here. <a href="https://intranet.mozilla.org/Paid_Time_Off_%28PTO%29">All your PTO are belong to us</a>.</p>
     <form action="submit.php" method="post" name="pto-notify">
       <table><tbody>
       <tr>
