@@ -16,8 +16,8 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
   wail_and_bail();
 } else {
   // Check for validity of login
-  if (preg_match("/[a-z]+@mozilla\\.com/", $_SERVER["PHP_AUTH_USER"])) {
-    $dn = "mail=". $_SERVER["PHP_AUTH_USER"] .",o=com,dc=mozilla";
+  if (preg_match("/[a-z]+@(mozilla(?:messaging)?)\\.com/", $_SERVER["PHP_AUTH_USER"], $matches)) {
+    $dn = "mail=". $_SERVER["PHP_AUTH_USER"] .",o=com,dc={$matches[1]}";
     $password = $_SERVER["PHP_AUTH_PW"];
   } else {
     wail_and_bail();

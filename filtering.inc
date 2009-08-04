@@ -13,7 +13,7 @@ if (!empty($_GET["end"])) {
   $conditions[] = "end >= ". safeint($_GET["end"]);
 }
 
-// Actual, useful from / to querying
+// Actual, useful `from` / `to` querying
 $from_time = NULL;
 $to_time = NULL;
 if (!empty($_GET["from"])) {
@@ -34,6 +34,11 @@ if ($from_time || $to_time) {
 // Person filtering / querying
 if (!empty($_GET["person"])) {
   $conditions[] = 'person LIKE "%'. htmlspecialchars($_GET["person"], ENT_QUOTES) .'%mozilla.com"';
+}
+
+// ID overrides everything else
+if (!empty($_GET["id"])) {
+  $conditions = array("id = " . (int)$_GET["id"]);
 }
 
 // Join all WHERE clauses

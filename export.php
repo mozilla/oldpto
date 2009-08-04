@@ -64,7 +64,14 @@ require_once "./templates/header.php";
   jQuery.noConflict();
   (function($) {
     $(document).ready(function() {
-      $("#view-all").click(function() { fetch(); }).click(); // Fire "View All"
+      $("#view-all").click(function() { fetch(); });
+
+      var match;
+      if (match = window.location.search.match(/^\?id=(\d+)/)) {
+        fetch({id: match[1]});
+      } else {
+        $("#view-all").click(); // Fire "View All"
+      }
 
       $("#view-today").click(function() {
         var [from, to] = makeZeroedDates();
