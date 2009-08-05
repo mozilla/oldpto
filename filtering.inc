@@ -33,7 +33,7 @@ if ($from_time || $to_time) {
 
 // Person filtering / querying
 if (!empty($_GET["person"])) {
-  $conditions[] = 'person LIKE "%'. htmlspecialchars($_GET["person"], ENT_QUOTES) .'%mozilla.com"';
+  $conditions[] = 'person LIKE "%'. htmlspecialchars($_GET["person"], ENT_QUOTES) .'%mozilla%"';
 }
 
 // ID overrides everything else

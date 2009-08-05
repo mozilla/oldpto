@@ -58,7 +58,7 @@ function output_atom($data) {
   print "<author><name>Mozilla PTO</name></author>";
   foreach ($data as $pto) {
     $pto["email"] = $pto["person"];
-    $pto["person"] = str_replace("@mozilla.com", '', $pto["person"]);
+    $pto["person"] = email_to_alias($pto["person"]);
     $start = date("m/d/y", $pto["start"]);
     $end = date("m/d/y", $pto["end"]);
     $range = ($start == $end) ? "on $start" : "from $start to $end";
@@ -103,7 +103,7 @@ X-WR-CALNAME:PTOs
 
 EOD;
   foreach ($data as $pto) {
-    $pto["person"] = str_replace("@mozilla.com", '', $pto["person"]);
+    $pto["person"] = email_to_alias($pto["person"]);
     // Line breaks and commas must be escaped.
     $pto["details"] = str_replace(", ", '\, ', $pto["details"]);
     $pto["details"] = str_replace("\n", '\n', $pto["details"]);

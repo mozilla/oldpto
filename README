@@ -11,7 +11,7 @@ Install
 LDAP assumptions
 - 'manager' field contains a dn pointing to manager's record
 - everyone has a 'manager' (not true for mitchell and lilly)
-- everyone's 'mail' field ends with "@mozilla.com"
+- *@mozilla* can be used to glob everyone's email address
 
 TODO
 - 

@@ -3,15 +3,36 @@ require_once("config.php");
 require_once("pto.inc");
 require_once("auth.php");
 
+$validations = array(
+  "hours" => '/^\d+$/',
+  "start" => '/^[01]\d\/[0-3]\d\/\d{4}$/',
+  "end" => '/^[01]\d\/[0-3]\d\/\d{4}$/'
+);
+$failures = array();
+foreach ($validations as $field => $pattern) {
+  if (!preg_match($pattern, $_POST[$field])) {
+    $failures[] = $field;
+  }
+}
+if (!empty($failures)) {
+  require_once "./templates/header.php";
+  print "<h1>PTO Notifications</h1>";
+  print "<p>Oh noes! The following fields weren't in the right formats!</p>";
+  print "<pre>". implode(", ", $failures) ."</pre>";
+  require_once "./templates/footer.php";
+  die;
+}
+
+
 $notifier_email = $_SERVER["PHP_AUTH_USER"];
 $data = ldap_find(
-  $connection, "mail=". $notifier_email, array("givenName", "sn", "manager", "cn")
+  $connection, "mail=". $notifier_email, array("manager", "cn")
 );
 $notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
 // "OMG, not querying LDAP for the real email? That's cheating!"
-preg_match("/mail=([a-z]+@mozilla\\.com),/", $manager_dn, $matches);
+preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
 $manager_email = $matches[1];
 
 $data = ldap_find(
@@ -37,10 +58,13 @@ if (isset($_POST["cc"]) && $_POST["cc"] == "1") {
 $banned = array();
 $allowed = array();
 while ($check = array_pop($notified_people)) {
-  $match = null;
-  preg_match("/<?(.+@mozilla\\.com)/", $check, $match);
-  $bracket = strpos($match[1], '<');
-  $address = $bracket === FALSE ? $match[1] : substr($match[1], $bracket + 1);
+  $check = trim($check);
+  if (in_string($check, '<') && in_string($check, '>')) {
+    $check = explode('>', $check);
+    $check = explode('<', $check[0]);
+    $check = $check[1];
+  }
+  $address = $check;
   if (in_array($address, $mail_blacklist)) {
     $banned[] = $check;
   } else {

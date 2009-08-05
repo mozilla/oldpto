@@ -16,7 +16,7 @@ $notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
 // "OMG, not querying LDAP for the real email? That's cheating!"
-preg_match("/mail=([a-z]+@mozilla\\.com),/", $manager_dn, $matches);
+preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
 $manager_email = $matches[1];
 $is_hr = in_array($manager_email, $hr_managers);
 // Exclude details from non-HR personnel
@@ -48,7 +48,7 @@ if (function_exists($output_function)){
 require_once "./templates/header.php";
 ?>
   <h1>PTO Notifications</h1>
-  <p>Herro thar, <?= str_replace("@mozilla.com", '', $notifier_email) ?>.</p>
+  <p>Herro thar, <?= email_to_alias($notifier_email) ?>.</p>
   <ul id="views">
     <li><a id="view-all">All</a></li>
     <li><a id="view-today">Today</a></li>
@@ -143,7 +143,7 @@ require_once "./templates/header.php";
       
       var K = function(x) { return x; };
       var formatters = {
-        id: K, person: function(x) x.replace(/@mozilla\.com$/, ''), hours: K,
+        id: K, person: function(x) x.replace(/@mozilla.*$/, ''), hours: K,
         added: fdate, start: fdate, end: fdate, details: K
       };
 

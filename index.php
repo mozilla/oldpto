@@ -12,7 +12,7 @@ $notifier_email = $_SERVER["PHP_AUTH_USER"];
 $notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
-preg_match("/mail=([a-z]+@mozilla\\.com),/", $manager_dn, $matches);
+preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
 $manager_email = $matches[1];
 
 $data = ldap_find(
@@ -27,7 +27,7 @@ $notified_people[] = $manager_name ." <". $manager_email .'>';
 require_once "./templates/header.php";
 ?>
     <h1>PTO Notification</h1>
-    <p>O hai, <?= str_replace("@mozilla.com", '', $notifier_email) ?>. Submit your PTO notification here. <a href="https://intranet.mozilla.org/Paid_Time_Off_%28PTO%29">All your PTO are belong to us</a>.</p>
+    <p>O hai, <?= email_to_alias($notifier_email) ?>. Submit your PTO notification here. <a href="https://intranet.mozilla.org/Paid_Time_Off_%28PTO%29">All your PTO are belong to us</a>.</p>
     <form action="submit.php" method="post" name="pto-notify">
       <table><tbody>
       <tr>

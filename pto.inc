@@ -4,7 +4,7 @@ require_once("FirePHPCore/fb.php");
 ob_start();
 
 function ldap_find($connection, $filter, $attributes) {
-  $search = ldap_search($connection, "o=com, dc=mozilla", $filter, $attributes);
+  $search = ldap_search($connection, "dc=mozilla", $filter, $attributes);
   return ldap_get_entries($connection, $search);
 }
 
@@ -19,3 +19,9 @@ function maketime($slashed_date) {
   }
   return $t;
 }
+
+function email_to_alias($email) {
+  $alias = explode('@', $email);
+  return $alias[0];
+}
+
