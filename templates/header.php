@@ -12,3 +12,9 @@
   </head>
 
   <body>
+  <div id="page">
+  <h1>PTO Notification</h1>
+  <ul id="menu">
+    <li><a href="./">Notify</a></li>
+    <li><a href="./export.php">List</a></li>
+  </ul>

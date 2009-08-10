@@ -18,6 +18,9 @@ function output_csv($data) {
   }
   
   header("Content-Type: ". ($correct_mime ? "text/csv" : "text/plain"));
+  if ($correct_mime) {
+    header("Content-Disposition: attachment; filename=\"PTOs.csv\"");
+  }
   $f = fopen("php://output", 'w');
   $fields = array("id", "person", "added", "hours", "details", "start", "end");
   fputcsv($f, array_map("ucwords", $fields));

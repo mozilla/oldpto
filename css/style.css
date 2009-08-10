@@ -1,75 +1,209 @@
 
+* {
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  font-style: inherit;
+  text-decoration: none;
+  list-style: none;
+  }
+
+html {
+  font: 14px "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  background: url(bg.png) #67a7c7 repeat-x fixed;
+  color: #fff;
+  }
+
 body {
-  font-family: Georgia, sans-serif;
   padding: 15px;
   margin: 0;
-  background: url(background.jpg) repeat-x;
-}
+  }
+
+h1 {
+  left: 10%;
+  height: 47px;
+  width: 0;
+  padding-left: 275px;
+  background: url(pto.png) no-repeat;
+  overflow: hidden;
+  }
+
+a {
+  color: #acd1e3;
+  }
+
+a:hover {
+  text-decoration: underline;
+  }
+
+em {
+  font-style: italic;
+  }
+
+#page {
+  width: 90%;
+  margin: 0 auto;
+  position: relative;
+  }
+
+  #page a {
+    color: #0489B7;
+    }
+
+form {
+  color: black;
+  background-color: white;
+  padding: 1em;
+  -moz-border-radius: 0.5em;
+  margin-top: 1em;
+  }
+  
+p {
+  margin: 0.5em 0 1em 0;
+  }
+
+label {
+  margin-left: 2px;
+  }
 
 span.ui-timepickr {
   background-color: #FCFDFD;
   border: 1px solid #A6C9E2;
   -moz-border-radius: 5px;
-}
+  }
+
+#menu {
+  position: absolute;
+  right: 3em;
+  top: 1em;
+  }
+
+  #menu li {
+    display: inline;
+    margin-left: 3em;
+    }
+
+    #menu li a {
+      color: #ACD1E3;
+    }
 
 #views {
   background-color: rgba(102, 204, 255, 0.5);
-  padding: 0.25em 0 0.25em 0;
-}
+  padding: 0.5em 0 0.5em 0;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-topright: 0.5em;
+  -moz-user-select: none;
+  cursor: default;
+  }
 
-#views li {
-  display: inline;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  border-right: 1px solid black;
-}
+  #views li {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    }
+    
+    #views li.view {
+      float: right;
+      border-right: 1px solid black;
+      margin-top: 3px;
+      }
 
-#views li:last-child {
-  border-right: none;
-}
+    #views li:first-child {
+      border-right: none;
+      }
 
-#views li a {
-  text-decoration: none;
-  color: black;
-  cursor: pointer;
-}
+      #views li a {
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+        padding: 0.25em;
+        }
+      
+      #views li a:hover {
+        background-color: #DDD;
+        }
 
-#views li a:hover {
-  background-color: #DDD;
-}
+#loading {
+  display: none;
+  }
+
+  #loading.loading {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 4px;
+    height: 0;
+    padding: 0;
+    padding-top: 16px;
+    width: 16px;
+    overflow: hidden;
+    background: url(throbber.png) no-repeat;
+    }
+
+#formats {
+  background-color: #BDDCE6;
+  color: #000;
+  padding: 0.5em 0.5em 0 1em;
+  -moz-user-select: none;
+  cursor: default;
+  }
+
+  #formats ul { 
+    display: inline;
+    }
+
+    #formats ul li { 
+      display: inline;
+      padding: 0.25em 1em 0.25em 1em;
+      }
+
+    #formats ul li.active { 
+      background-color: white;
+      -moz-border-radius-topleft: 0.4em;
+      -moz-border-radius-topright: 0.4em;
+      }
 
 td {
   vertical-align: top;
-}
+  padding: 0.25em;
+  }
 
 tr td:first-child label {
   font-weight: bold;
-}
+  }
 
-#pto tr td {
-  padding: 0.3em;
-}
+#pto {
+  padding-top: 0.25em;
+  background-color: white;
+  color: black
+  }
 
-#pto tbody tr:nth-child(even) {
-  background: rgba(192, 192, 192, 0.7);
-}
+  #pto tr td {
+    padding: 0.3em;
+    }
 
-#pto th {
-  background: rgba(128, 128, 128, 0.5) no-repeat right center;
-  padding-right: 24px;
-}
+  #pto tbody tr:nth-child(even) {
+    background: rgba(192, 192, 192, 0.7);
+    }
 
-#pto th.header {
-  cursor: pointer;
-  background-image: url(sort.gif);
-}
-#pto th.headerSortDown { background-image: url(desc.gif); }
-#pto th.headerSortUp { background-image: url(asc.gif); }
-#pto th.headerSortDown, #pto th.headerSortUp {
-  background-color: rgba(128, 128, 128, 1);
-}
+  #pto th {
+    background: rgba(128, 128, 128, 0.5) no-repeat right center;
+    padding-right: 24px;
+    }
 
-#pto #no-match {
-  text-align: center;
-}
+    #pto th.header {
+      cursor: pointer;
+      background-image: url(sort.gif);
+      }
+    #pto th.headerSortDown { background-image: url(desc.gif); }
+    #pto th.headerSortUp { background-image: url(asc.gif); }
+    #pto th.headerSortDown, #pto th.headerSortUp {
+      background-color: rgba(128, 128, 128, 1);
+      }
+
+  #pto #no-match {
+    text-align: center;
+    }
 

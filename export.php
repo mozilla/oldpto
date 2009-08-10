@@ -47,15 +47,28 @@ if (function_exists($output_function)){
 
 require_once "./templates/header.php";
 ?>
-  <h1>PTO Notifications</h1>
-  <p>Herro thar, <?= email_to_alias($notifier_email) ?>.</p>
+  <p>Herro thar, <?= email_to_alias($notifier_email) ?>. We've got all your PTOs right here™.</p>
   <ul id="views">
-    <li><a id="view-all">All</a></li>
-    <li><a id="view-today">Today</a></li>
-    <li><a id="view-week">This Week</a></li>
-    <li><a id="view-month">This Month</a></li>
-    <li><a id="view-year">This Year</a></li>
+    <li class="view"><a id="view-year">This Year</a></li>
+    <li class="view"><a id="view-month">This Month</a></li>
+    <li class="view"><a id="view-week">This Week</a></li>
+    <li class="view"><a id="view-today">Today</a></li>
+    <li class="view"><a id="view-all">All</a></li>
+    <li id="range"><input type="text" id="from" size="8" /> - 
+                   <input type="text" id="to" size="8" /> 
+                   <button id="filter">Filter</button> 
+                   <span id="loading">Loading...</span></li>
   </ul>
+  <div id="formats">
+    Formats: 
+    <ul>
+    <li class="active" title="You're lookin' at it">Table</li>
+    <li><a class="format" href="?format=csv" id="format-csv" title="Good for spreadsheet software">CSV</a></li>
+    <li><a class="format" href="?format=atom" id="format-atom" title="Good for feed readers">Atom</a></li>
+    <li><a class="format" href="?format=ical" id="format-ical" title="Good for calendar apps">iCal</a></li>
+    <li><a class="format" href="?format=json" id="format-json" title="Good for mash-ups">JSON</a></li>
+    </ul>
+  </div>
   <div id="pto"></div>
 
   <script type="text/javascript" src="./js/jquery.strftime-minified.js"></script>
@@ -63,15 +76,30 @@ require_once "./templates/header.php";
   <script type="text/javascript">
   jQuery.noConflict();
   (function($) {
-    $(document).ready(function() {
-      $("#view-all").click(function() { fetch(); });
+    Number.prototype.toTimestamp = function() {
+      return Math.round(this.valueOf() / 1000);
+    };
 
-      var match;
-      if (match = window.location.search.match(/^\?id=(\d+)/)) {
-        fetch({id: match[1]});
-      } else {
-        $("#view-all").click(); // Fire "View All"
-      }
+    $(document).ready(function() {
+      $("#loading").ajaxStart(function() {
+        $(this).addClass("loading");
+      }).ajaxStop(function() {
+        $(this).removeClass("loading");
+      });
+
+      $("#filter").click(function() {
+        fire({
+          from: Date.parse($("#from").val()).toTimestamp(),
+          to: Date.parse($("#to").val()).toTimestamp()
+        });
+      });
+      $("#from, #to").keypress(function(e) {
+        if (e.which == 13) {
+          $("#filter").click();
+        }
+      });
+
+      $("#view-all").click(function() { fetch(); });
 
       $("#view-today").click(function() {
         var [from, to] = makeZeroedDates();
@@ -99,31 +127,57 @@ require_once "./templates/header.php";
         to.setFullYear(to.getFullYear() + 1);
         fetch({from: from, to: to});
       });
+
+      var match;
+      if (match = window.location.search.match(/^\?id=(\d+)/)) {
+        fetch({id: match[1]});
+      } else {
+        $("#view-month").click(); // Fire "View This Month"
+      }
     });
 
     function makeZeroedDates(opts) {
+      opts = opts || {};
       opts.from = opts.from || new Date();
-      opts.to = to || new Date();
+      opts.to = opts.to || new Date();
       opts.methods = opts.methods || [];
       var methods = "Hours|Minutes|Seconds|Milliseconds".split('|');
       methods.concat.apply(methods, opts.methods).forEach(function(method) {
-        if (opts.from) { opts.from["set" + method](0); }
-        if (opts.to) { opts.to["set" + method](0); }
+        var val = (method == "Date") ? 1 : 0;
+        if (opts.from) { opts.from["set" + method](val); }
+        if (opts.to) { opts.to["set" + method](val); }
       });
-      return [from, to];
+      return [opts.from, opts.to];
     }
 
     function fetch(options) {
       options = options || {};
       if (options.from) {
-        options.from = Math.floor(options.from.valueOf() / 1000);
+        options.from = Math.round(options.from.valueOf() / 1000);
       }
       if (options.to) {
-        options.to = Math.floor(options.to.valueOf() / 1000);
+        options.to = Math.round(options.to.valueOf() / 1000);
       }
+      var from = options.from ? fdate(options.from) : '';
+      var to = options.to ? fdate(options.to) : '';
+      $("#from").val(from);
+      $("#to").val(to);
+      fire(options);
+    }
+
+    function fire(options) {
+      $("#formats a.format").each(function() {
+        var url = "?format=" + $(this).attr("id").replace(/^format-/, '');
+        opts = $.param(options);
+        $(this).attr("href", url + (opts ? '&' + opts : ''));
+      });
       $.getJSON("export.php", $.extend({format: "json"}, options), inject);
     }
 
+    function fdate(x) {
+      return $.strftime({format: '%Y/%m/%d', dateTime: new Date(x * 1000)});
+    };
+      
     function inject(data) {
       var preferredOrder = "id|person|added|hours|start|end|details".split('|');
       var fieldNames = {
@@ -137,10 +191,6 @@ require_once "./templates/header.php";
         if (presentFields.indexOf(field) != -1) { fields.push(field); }
       });
 
-      var fdate = function(x) {
-        return $.strftime({format: '%Y-%m-%d', dateTime: new Date(x * 1000)});
-      };
-      
       var K = function(x) { return x; };
       var formatters = {
         id: K, person: function(x) x.replace(/@mozilla.*$/, ''), hours: K,

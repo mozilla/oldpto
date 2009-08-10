@@ -16,9 +16,10 @@ foreach ($validations as $field => $pattern) {
 }
 if (!empty($failures)) {
   require_once "./templates/header.php";
-  print "<h1>PTO Notifications</h1>";
+  print "<form>";
   print "<p>Oh noes! The following fields weren't in the right formats!</p>";
   print "<pre>". implode(", ", $failures) ."</pre>";
+  print "</form>";
   require_once "./templates/footer.php";
   die;
 }
@@ -127,7 +128,7 @@ if (!DISABLE_MAIL) {
 
 require_once "./templates/header.php";
 ?>
-    <h1>PTO Notification</h1>
+    <form>
     <p>
     <?php
       if ($query && $mail_result) {
@@ -152,5 +153,6 @@ require_once "./templates/header.php";
         print "<pre>". htmlspecialchars(implode(", ", $banned)) ."</pre>";
       }
     ?>
+    </form>
 
 <?php require_once "./templates/footer.php"; ?>
