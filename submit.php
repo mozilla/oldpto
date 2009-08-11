@@ -44,7 +44,9 @@ $data = ldap_find(
 $manager_name = $data[0]["cn"][0];
 
 // Add the manager
-$notified_people[] = $manager_name ." <". $manager_email .'>';
+if (ENABLE_MANAGER_NOTIFYING) {
+  $notified_people[] = $manager_name ." <". $manager_email .'>';
+}
 // Merge additional inputted people to notify
 if (!empty($_POST["people"])) {
   $people = array_map("trim", explode(",", $_POST["people"]));
@@ -108,7 +110,7 @@ foreach ($tokens as $token => $replacement) {
 
 $c = mysql_connect($mysql["host"], $mysql["user"], $mysql["password"]);
 mysql_select_db($mysql["database"]);
-if (!DISABLE_DB) {
+if (ENABLE_DB) {
   $query_string = 
     "INSERT INTO pto (person, details, hours, start, end, added) VALUES(".
     '"'. $notifier_email .'", '.
@@ -122,8 +124,14 @@ if (!DISABLE_DB) {
   $query = mysql_query($query_string);
 }
 
-if (!DISABLE_MAIL) {
+if (ENABLE_MAIL) {
   $mail_result = mail(implode(", ", $notified_people), $subject, $body, "From: ". $from);
+} elseif (DEBUG_ON) {
+  $mail_result = FALSE;
+  fb("To: ". implode(", ", $notified_people));
+  fb("Subject: ". $subject);
+  fb("Body: ". $body);
+  fb("From: ". $from);
 }
 
 require_once "./templates/header.php";

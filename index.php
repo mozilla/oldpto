@@ -22,7 +22,9 @@ $data = ldap_find(
 );
 $manager_name = $data[0]["cn"][0];
 
-$notified_people[] = $manager_name ." <". $manager_email .'>';
+if (ENABLE_MANAGER_NOTIFYING) {
+  $notified_people[] = $manager_name ." <". $manager_email .'>';
+}
 
 require_once "./templates/header.php";
 ?>

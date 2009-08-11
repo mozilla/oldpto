@@ -13,9 +13,10 @@ $mysql = array(
   "database" => ""
 );
 
-# Set the constants below to TRUE to avoid spamming / db junk.
-define("DISABLE_MAIL", FALSE);
-define("DISABLE_DB", FALSE);
+# Set the constants below to FALSE to do various debugging.
+define("ENABLE_MAIL", TRUE);
+define("ENABLE_DB", TRUE);
+define("ENABLE_MANAGER_NOTIFYING", TRUE);
 
 # Set below to TRUE to see MySQL error messages and query strings sent.
 define("DEBUG_ON", FALSE);
@@ -28,8 +29,7 @@ $hr_managers = array(
 
 # Specified in RFC address format. One address per array element, please.
 $notified_people = array(
-  "Karen Prescott <karen@mozilla.com>",
-  "Erica McClure <emcclure@mozilla.com>"
+  "Karen Prescott <karen@mozilla.com>"
 );
 
 # Specify addesses that aren't allowed in the additional notified people field.
