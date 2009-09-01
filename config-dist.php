@@ -42,8 +42,9 @@ $mail_blacklist = array(
 $from = "submitter";
 
 # The following template variables are available:
-# %notifier%, %hours%, %start%, %end%, %details%
+# %id%, %notifier%, %editor%, %hours%, %start%, %end%, %details%
 $subject = "PTO notification from %notifier%";
+$edit_subject = "Edit of PTO by %editor%";
 $body = <<<EOD
 %notifier% has submitted %hours% hours of PTO from %start% to %end% with the details:
 %details%
@@ -53,6 +54,20 @@ EOD;
 
 $single_day_body = <<<EOD
 %notifier% has submitted %hours% hours of PTO on %start% with the details:
+%details%
+
+- The Happy PTO Managing Intranet App
+EOD;
+
+$edit_body = <<<EOD
+%editor% has edited PTO entry #%id% to %hours% hours of PTO from %start% to %end% with the details:
+%details%
+
+- The Happy PTO Managing Intranet App
+EOD;
+
+$edit_single_day_body = <<<EOD
+%editor% has edited PTO entry #%id% to %hours% hours of PTO on %start% with the details:
 %details%
 
 - The Happy PTO Managing Intranet App

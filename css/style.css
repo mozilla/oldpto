@@ -58,22 +58,36 @@ form {
   color: black;
   background-color: white;
   padding: 1em;
+  border-radius: 0.5em;
   -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
   margin-top: 1em;
+  }
+
+input[size="10"] {
+  width: 12ex;
   }
   
 p {
   margin: 0.5em 0 1em 0;
   }
 
-label {
-  margin-left: 2px;
+form ul li {
+  padding-left: 1em;
+  list-style-type: disc;
+  list-style-position: inside;
   }
 
 span.ui-timepickr {
   background-color: #FCFDFD;
   border: 1px solid #A6C9E2;
+  border-radius: 5px;
   -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  }
+
+button#filter {
+  padding: 0.2em;
   }
 
 #menu {
@@ -94,9 +108,12 @@ span.ui-timepickr {
 #views {
   background-color: rgba(102, 204, 255, 0.5);
   padding: 0.5em 0 0.5em 0;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
   -moz-border-radius-topleft: 0.5em;
   -moz-border-radius-topright: 0.5em;
-  -moz-user-select: none;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
   cursor: default;
   }
 
@@ -106,6 +123,7 @@ span.ui-timepickr {
     }
     
     #views li.view {
+      -moz-user-select: none;
       float: right;
       border-right: 1px solid black;
       margin-top: 3px;
@@ -161,8 +179,12 @@ span.ui-timepickr {
 
     #formats ul li.active { 
       background-color: white;
+      border-top-left-radius: 0.4em;
+      border-top-right-radius: 0.4em;
       -moz-border-radius-topleft: 0.4em;
       -moz-border-radius-topright: 0.4em;
+      -webkit-border-top-left-radius: 0.4em;
+      -webkit-border-top-right-radius: 0.4em;
       }
 
 td {
@@ -191,6 +213,7 @@ tr td:first-child label {
   #pto th {
     background: rgba(128, 128, 128, 0.5) no-repeat right center;
     padding-right: 24px;
+    text-align: center;
     }
 
     #pto th.header {
@@ -202,7 +225,11 @@ tr td:first-child label {
     #pto th.headerSortDown, #pto th.headerSortUp {
       background-color: rgba(128, 128, 128, 1);
       }
+    #pto th.action {
+      padding: 0 24px 0 24px;
+      }
 
+  #pto td.action, 
   #pto #no-match {
     text-align: center;
     }

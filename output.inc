@@ -11,6 +11,23 @@ function output_json($data) {
   die;
 }
 
+function output_sql($data) {
+  header("Content-Type: text/plain");
+  print "INSERT INTO `pto` (`id`, `person`, `added`, `hours`, `details`, `start`, `end`) VALUES\n";
+  $buffer = array();
+  foreach ($data as $e) {
+    if (!isset($e["details"])) {
+      $e["details"] = '';
+    }
+    $buffer[] = sprintf("(%d, '%s', %d, %F, '%s', %d, %d)",
+                        $e["id"], $e["person"], $e["added"], $e["hours"],
+                        $e["details"], $e["start"], $e["end"]);
+  }
+  print implode(", \n", $buffer);
+  print ";";
+  die;
+}
+
 function output_csv($data) {
   $correct_mime = TRUE;
   if ($_GET["as_text"] == '1') {

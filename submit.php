@@ -4,7 +4,7 @@ require_once("pto.inc");
 require_once("auth.php");
 
 $validations = array(
-  "hours" => '/^\d+$/',
+  "hours" => '/^[1-9]\d*$|^\d*\.\d$/',
   "start" => '/^[01]\d\/[0-3]\d\/\d{4}$/',
   "end" => '/^[01]\d\/[0-3]\d\/\d{4}$/'
 );
@@ -23,6 +23,8 @@ if (!empty($failures)) {
   require_once "./templates/footer.php";
   die;
 }
+$is_editing = $_POST["edit"] == "1";
+$id = isset($_POST["id"]) ? (int)$_POST["id"] : NULL;
 
 
 $notifier_email = $_SERVER["PHP_AUTH_USER"];
@@ -42,6 +44,37 @@ $data = ldap_find(
   array("cn")
 );
 $manager_name = $data[0]["cn"][0];
+$is_hr = in_array($manager_email, $hr_managers);
+
+$c = mysql_connect($mysql["host"], $mysql["user"], $mysql["password"]);
+mysql_select_db($mysql["database"]);
+
+if ($is_editing && !$is_hr) {
+  // Can the user edit it?
+  $query_string = 
+    "SELECT id FROM pto WHERE ". 
+    "id = ". (string)$id ." AND ".
+    'person = "'. $notifier_email ." AND ".
+    "end > ". (string)time() .
+    ';';
+  $query = mysql_query($query_string);
+  $id = mysql_result($query, 0);
+  if ($id === FALSE) {
+    require_once "./templates/header.php";
+    print "<form>";
+    print "<p>You cannot edit this PTO entry due to one of the following:</p>";
+    print "<ul>";
+    print "  <li>You are not the one who submitted this PTO entry.</li>";
+    print "  <li>It is now past the end of the PTO.</li>";
+    print "  <li>You just don't have enough power. Ask someone from HR.</li>";
+    print "</ul>";
+    print "</form>";
+    require_once "./templates/footer.php";
+    die;
+  } else {
+    $id = (int)$id;
+  }
+}
 
 // Add the manager
 if (ENABLE_MANAGER_NOTIFYING) {
@@ -87,7 +120,9 @@ if ($from == "submitter") {
 }
 
 $tokens = array(
+  "%id%" => $id,
   "%notifier%" => $notifier_name,
+  "%editor%" => $notifier_name,
   "%hours%" => $hours,
   "%start%" => $_POST["start"],
   "%end%" => $_POST["end"],
@@ -103,24 +138,39 @@ if ($start == $end) {
   // Expand single day to a timerange of a whole day.
   $end += (1 * 60 * 60 * 24) - 1;
 }
+if ($is_editing) {
+  $subject = $edit_subject;
+  $body = $single_day_fix ? $edit_single_day_body : $edit_body;
+}
 foreach ($tokens as $token => $replacement) {
   $subject = str_replace($token, $replacement, $subject);
   $body = str_replace($token, $replacement, $body);
 }
 
-$c = mysql_connect($mysql["host"], $mysql["user"], $mysql["password"]);
-mysql_select_db($mysql["database"]);
 if (ENABLE_DB) {
-  $query_string = 
-    "INSERT INTO pto (person, details, hours, start, end, added) VALUES(".
-    '"'. $notifier_email .'", '.
-    '"'. mysql_real_escape_string($_POST["details"]) .'", '.
-    (string)$hours .', '.
-    (string)$start .', '.
-    (string)$end .', '.
-    (string)time() .
-    ");"
-  ;
+  if ($is_editing) {
+    $query_string = 
+      "UPDATE pto SET ".
+      'person = "'. $notifier_email .'", '.
+      'details = "'. mysql_real_escape_string($_POST["details"]) .'", '.
+      'hours = '. (string)$hours .', '.
+      'start = '. (string)$start .', '.
+      'end = '. (string)$end .' '.
+      'WHERE id = '. (string)$id .
+      ';'
+    ;
+  } else {
+    $query_string = 
+      "INSERT INTO pto (person, details, hours, start, end, added) VALUES(".
+      '"'. $notifier_email .'", '.
+      '"'. mysql_real_escape_string($_POST["details"]) .'", '.
+      (string)$hours .', '.
+      (string)$start .', '.
+      (string)$end .', '.
+      (string)time() .
+      ");"
+    ;
+  }
   $query = mysql_query($query_string);
 }
 
@@ -150,6 +200,8 @@ require_once "./templates/header.php";
       }
 
       if (!$query && DEBUG_ON) {
+        fb("is_editing?");
+        fb($is_editing);
         fb(mysql_errno() .": ". mysql_error());
         fb($query_string);
       }

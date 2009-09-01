@@ -47,15 +47,16 @@ if (function_exists($output_function)){
 
 require_once "./templates/header.php";
 ?>
-  <p>Herro thar, <?= email_to_alias($notifier_email) ?>. We've got all your PTOs right here™.</p>
+  <p>Herro thar, <span id="user"><?= email_to_alias($notifier_email) ?></span>. 
+     We've got all your PTOs right here™.</p>
   <ul id="views">
     <li class="view"><a id="view-year">This Year</a></li>
     <li class="view"><a id="view-month">This Month</a></li>
     <li class="view"><a id="view-week">This Week</a></li>
     <li class="view"><a id="view-today">Today</a></li>
     <li class="view"><a id="view-all">All</a></li>
-    <li id="range"><input type="text" id="from" size="8" /> - 
-                   <input type="text" id="to" size="8" /> 
+    <li id="range"><input type="text" id="from" size="10" /> - 
+                   <input type="text" id="to" size="10" /> 
                    <button id="filter">Filter</button> 
                    <span id="loading">Loading...</span></li>
   </ul>
@@ -67,6 +68,7 @@ require_once "./templates/header.php";
     <li><a class="format" href="?format=atom" id="format-atom" title="Good for feed readers">Atom</a></li>
     <li><a class="format" href="?format=ical" id="format-ical" title="Good for calendar apps">iCal</a></li>
     <li><a class="format" href="?format=json" id="format-json" title="Good for mash-ups">JSON</a></li>
+    <li><a class="format" href="?format=sql" id="format-sql" title="Good for importing test data">SQL</a></li>
     </ul>
   </div>
   <div id="pto"></div>
@@ -74,6 +76,7 @@ require_once "./templates/header.php";
   <script type="text/javascript" src="./js/jquery.strftime-minified.js"></script>
   <script type="text/javascript" src="./js/jquery.tablesorter.js"></script>
   <script type="text/javascript">
+  window.isHR = <?= json_encode($is_hr) ?>;
   jQuery.noConflict();
   (function($) {
     Number.prototype.toTimestamp = function() {
@@ -102,13 +105,15 @@ require_once "./templates/header.php";
       $("#view-all").click(function() { fetch(); });
 
       $("#view-today").click(function() {
-        var [from, to] = makeZeroedDates();
+        var d = makeZeroedDates();
+        var from = d[0], to = d[1];
         to = to.valueOf() + (1000 * 60 * 60 * 24);
         fetch({from: from, to: to});
       });
 
       $("#view-week").click(function() {
-        var [from, to] = makeZeroedDates();
+        var d = makeZeroedDates();
+        var from = d[0], to = d[1];
         // The midnight between Sunday and Monday is the cutoff.
         // getDay() returns 0 for Sunday, 1 for Monday, etc.
         from = from.valueOf() - (1000 * 60 * 60 * 24 * (from.getDay() - 1));
@@ -117,13 +122,15 @@ require_once "./templates/header.php";
       });
 
       $("#view-month").click(function() {
-        var [from, to] = makeZeroedDates({methods: ["Date"]});
+        var d = makeZeroedDates({methods: ["Date"]});
+        var from = d[0], to = d[1];
         to.setMonth(to.getMonth() + 1);
         fetch({from: from, to: to});
       });
 
       $("#view-year").click(function() {
-        var [from, to] = makeZeroedDates({methods: ["Date", "Month"]});
+        var d = makeZeroedDates({methods: ["Date", "Month"]});
+        var from = d[0], to = d[1];
         to.setFullYear(to.getFullYear() + 1);
         fetch({from: from, to: to});
       });
@@ -131,6 +138,23 @@ require_once "./templates/header.php";
       var match;
       if (match = window.location.search.match(/^\?id=(\d+)/)) {
         fetch({id: match[1]});
+      } else if (window.location.hash != "") {
+        var opts = {};
+        $.each(window.location.hash.substring(1).split('&'), function() {
+          var pair = this.split('=');
+          var k = pair[0], v = pair.slice(1).join('=');
+          if (!opts[k]) {
+            opts[k] = v;
+          } else if (opts[k] && !$.isArray(opts[k])) {
+            opts[k] = [opts[k]];
+            opts[k].push(v);
+          } else {
+            opts[k].push(v);
+          }
+        });
+        opts.from && (opts.from += "000");
+        opts.to && (opts.to += "000");
+        fetch(opts);
       } else {
         $("#view-month").click(); // Fire "View This Month"
       }
@@ -166,11 +190,12 @@ require_once "./templates/header.php";
     }
 
     function fire(options) {
+      var opts = $.param(options);
       $("#formats a.format").each(function() {
         var url = "?format=" + $(this).attr("id").replace(/^format-/, '');
-        opts = $.param(options);
         $(this).attr("href", url + (opts ? '&' + opts : ''));
       });
+      window.location.hash = opts;
       $.getJSON("export.php", $.extend({format: "json"}, options), inject);
     }
 
@@ -193,8 +218,8 @@ require_once "./templates/header.php";
 
       var K = function(x) { return x; };
       var formatters = {
-        id: K, person: function(x) x.replace(/@mozilla.*$/, ''), hours: K,
-        added: fdate, start: fdate, end: fdate, details: K
+        id: K, person: function(x) { return x.replace(/@mozilla.*$/, ''); }, 
+        hours: K, added: fdate, start: fdate, end: fdate, details: K
       };
 
       $("#pto table").remove();
@@ -203,16 +228,27 @@ require_once "./templates/header.php";
       fields.forEach(function(field) {
         code.push("<th>" + fieldNames[field] + "</th>");
       });
+      if (data.length != 0) {
+        // Add action header
+        code.push('<th class="action">Action</th>');
+      }
       code.push("</tr></thead><tbody></tbody></table>");
       
       $(code.join('')).appendTo("#pto");
       code = [];
 
+      var user = $("#user").html();
       data.forEach(function(e) {
         code.push("<tr>");
         fields.forEach(function(field) {
           code.push("<td>" + formatters[field](e[field]) + "</td>")
         });
+        // Add edit field
+        code.push('<td class="action">');
+        if (window.isHR || formatters.person(e.person) == user) {
+          code.push('<a href="./edit.php?id=' + e.id + '">Edit</a>');
+        }
+        code.push("</td>");
         code.push("</tr>");
       });
 
@@ -222,7 +258,9 @@ require_once "./templates/header.php";
 
       $("#pto tbody").html(code.join(''));
       if (data.length != 0) {
-        $("#pto table").tablesorter({ sortList: [[0, 1]] });
+        opts = {sortList: [[0, 1]], headers: {}};
+        opts.headers[presentFields.length] = {sorter: false};
+        $("#pto table").tablesorter(opts);
       }
     }
 

@@ -25,3 +25,7 @@ function email_to_alias($email) {
   return $alias[0];
 }
 
+function fill($edit, $field) {
+  return isset($edit[$field]) ? ' value="'. $edit[$field] .'"' : '';
+}
+
