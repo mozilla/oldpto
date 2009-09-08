@@ -67,7 +67,7 @@ form {
 input[size="10"] {
   width: 12ex;
   }
-  
+
 p {
   margin: 0.5em 0 1em 0;
   }
@@ -121,7 +121,7 @@ button#filter {
     padding-left: 0.5em;
     padding-right: 0.5em;
     }
-    
+
     #views li.view {
       -moz-user-select: none;
       float: right;
@@ -139,7 +139,7 @@ button#filter {
         cursor: pointer;
         padding: 0.25em;
         }
-      
+
       #views li a:hover {
         background-color: #DDD;
         }
@@ -168,16 +168,16 @@ button#filter {
   cursor: default;
   }
 
-  #formats ul { 
+  #formats ul {
     display: inline;
     }
 
-    #formats ul li { 
+    #formats ul li {
       display: inline;
       padding: 0.25em 1em 0.25em 1em;
       }
 
-    #formats ul li.active { 
+    #formats ul li.active {
       background-color: white;
       border-top-left-radius: 0.4em;
       border-top-right-radius: 0.4em;
@@ -229,7 +229,7 @@ tr td:first-child label {
       padding: 0 24px 0 24px;
       }
 
-  #pto td.action, 
+  #pto td.action,
   #pto #no-match {
     text-align: center;
     }
