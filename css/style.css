@@ -54,7 +54,8 @@ em {
     color: #0489B7;
     }
 
-form {
+section {
+  display: block;
   color: black;
   background-color: white;
   padding: 1em;
