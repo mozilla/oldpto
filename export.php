@@ -30,6 +30,14 @@ while ($row = mysql_fetch_assoc($query)) {
   foreach (array("id", "added", "start", "end") as $field) {
     $row[$field] = (int)$row[$field];
   }
+  $row["hours"] = (double)$row["hours"];
+
+  $search = ldap_search($connection, "dc=mozilla",
+                        "mail=". $row["person"] ."*", array("givenName", "sn"));
+  $match = ldap_get_entries($connection, $search);
+  $row["sn"] = $match[0]["sn"][0];
+  $row["givenName"] = $match[0]["givenname"][0];
+
   $results[] = $row;
 }
 
@@ -47,7 +55,7 @@ if (function_exists($output_function)){
 
 require_once "./templates/header.php";
 ?>
-  <p>Herro thar, <span id="user"><?= email_to_alias($notifier_email) ?></span>. 
+  <p>Herro thar, <span id="user"><?= email_to_alias($notifier_email) ?></span>.
      We've got all your PTOs right here™.</p>
   <ul id="views">
     <li class="view"><a id="view-year">This Year</a></li>
@@ -55,13 +63,13 @@ require_once "./templates/header.php";
     <li class="view"><a id="view-week">This Week</a></li>
     <li class="view"><a id="view-today">Today</a></li>
     <li class="view"><a id="view-all">All</a></li>
-    <li id="range"><input type="text" id="from" size="10" /> - 
-                   <input type="text" id="to" size="10" /> 
-                   <button id="filter">Filter</button> 
+    <li id="range"><input type="text" id="from" size="10" /> -
+                   <input type="text" id="to" size="10" />
+                   <button id="filter">Filter</button>
                    <span id="loading">Loading...</span></li>
   </ul>
   <div id="formats">
-    Formats: 
+    Formats:
     <ul>
     <li class="active" title="You're lookin' at it">Table</li>
     <li><a class="format" href="?format=csv" id="format-csv" title="Good for spreadsheet software">CSV</a></li>
@@ -202,12 +210,12 @@ require_once "./templates/header.php";
     function fdate(x) {
       return $.strftime({format: '%Y/%m/%d', dateTime: new Date(x * 1000)});
     };
-      
+
     function inject(data) {
-      var preferredOrder = "id|person|added|hours|start|end|details".split('|');
+      var preferredOrder = "id|givenName|sn|added|hours|start|end|details".split('|');
       var fieldNames = {
-        id: "ID", person: "Who", added: "Added on", hours: "Hours",
-        start: "Start", end: "End", details: "Details"
+        id: "ID", givenName: "First name", sn: "Last name", added: "Added on",
+        hours: "Hours", start: "Start", end: "End", details: "Details"
       };
       var presentFields = [];
       for (var field in data[0]) { presentFields.push(field); }
@@ -217,9 +225,11 @@ require_once "./templates/header.php";
       });
 
       var K = function(x) { return x; };
+      var NA = function(x) { return x ? x : "<em>N/A</em>"; };
       var formatters = {
-        id: K, person: function(x) { return x.replace(/@mozilla.*$/, ''); }, 
-        hours: K, added: fdate, start: fdate, end: fdate, details: K
+        id: K, person: function(x) { return x.replace(/@mozilla.*$/, ''); },
+        hours: K, added: fdate, start: fdate, end: fdate, details: K,
+        givenName: NA, sn: NA
       };
 
       $("#pto table").remove();
@@ -233,7 +243,7 @@ require_once "./templates/header.php";
         code.push('<th class="action">Action</th>');
       }
       code.push("</tr></thead><tbody></tbody></table>");
-      
+
       $(code.join('')).appendTo("#pto");
       code = [];
 
@@ -266,5 +276,19 @@ require_once "./templates/header.php";
 
   })(jQuery);
 </script>
+<style type="text/css">
+  section {
+    -moz-border-radius: none;
+    background-color: transparent;
+    margin-top: 0;
+    padding: 0;
+  }
+  section p {
+    -moz-border-radius: 0.5em;
+    background-color: white;
+    margin-top: 1em;
+    padding: 1em;
+  }
+</style>
 
 <?php require_once "./templates/footer.php"; ?>

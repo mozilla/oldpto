@@ -5,7 +5,7 @@ function output_json($data) {
       $_GET["valid_mime"] == '1') {
     $correct_mime = TRUE;
   }
-  
+
   header("Content-Type: ". ($correct_mime ? "application/json" : "application/javascript"));
   print json_encode($data);
   die;
@@ -33,14 +33,25 @@ function output_csv($data) {
   if ($_GET["as_text"] == '1') {
     $correct_mime = FALSE;
   }
-  
+
   header("Content-Type: ". ($correct_mime ? "text/csv" : "text/plain"));
   if ($correct_mime) {
     header("Content-Disposition: attachment; filename=\"PTOs.csv\"");
   }
   $f = fopen("php://output", 'w');
-  $fields = array("id", "person", "added", "hours", "details", "start", "end");
-  fputcsv($f, array_map("ucwords", $fields));
+  $fields = array(
+    "id", "givenName", "sn", "added", "hours", "details", "start", "end"
+  );
+  $field_name_mapping = array(
+    "id" => "PTO ID", "givenName" => "First name", "sn" => "Last name",
+    "added" => "Added", "hours" => "Hours", "details" => "Details",
+    "start" => "Start", "end" => "End"
+  );
+  $field_names = array();
+  foreach ($fields as $field) {
+    $field_names[] = $field_name_mapping[$field];
+  }
+  fputcsv($f, $field_names);
   foreach ($data as $pto) {
     $row = array();
     foreach ($fields as $field) {
@@ -78,15 +89,17 @@ function output_atom($data) {
   print "<author><name>Mozilla PTO</name></author>";
   foreach ($data as $pto) {
     $pto["email"] = $pto["person"];
-    $pto["person"] = email_to_alias($pto["person"]);
+    # $pto["person"] = email_to_alias($pto["person"]);
+    $fn = $pto["givenName"];
+    $sn = $pto["sn"];
     $start = date("m/d/y", $pto["start"]);
     $end = date("m/d/y", $pto["end"]);
     $range = ($start == $end) ? "on $start" : "from $start to $end";
     print "<entry>";
-      print "<title>{$pto['person']} $range</title>";
+      print "<title>$fn $sn $range</title>";
       print "<id>$document?id={$pto["id"]}</id>";
       print "<link href=\"$document?id={$pto["id"]}\" />";
-      print "<author><name>{$pto['person']}</name><email>{$pto['email']}</email></author>";
+      print "<author><name>$fn $sn</name><email>{$pto['email']}</email></author>";
       print "<updated>". date(DATE_ATOM, $pto["added"]) ."</updated>";
       print "<summary>". htmlspecialchars($pto["details"]) ."</summary>";
     print "</entry>";
@@ -123,7 +136,9 @@ X-WR-CALNAME:PTOs
 
 EOD;
   foreach ($data as $pto) {
-    $pto["person"] = email_to_alias($pto["person"]);
+    $fn = $pto["givenName"];
+    $sn = $pto["sn"];
+    # $pto["person"] = email_to_alias($pto["person"]);
     // Line breaks and commas must be escaped.
     $pto["details"] = str_replace(", ", '\, ', $pto["details"]);
     $pto["details"] = str_replace("\n", '\n', $pto["details"]);
@@ -135,7 +150,7 @@ EOD;
     print "TRANSP:OPAQUE\n";
     print "DTSTART:". date($format, $pto["start"]) ."\n";
     print "DTSTAMP:". date($format, $pto["added"]) ."\n";
-    print "SUMMARY:PTO of {$pto['person']}\n";
+    print "SUMMARY:PTO of $fn $sn\n";
     print "CREATED:". date($format, $pto["added"]) ."\n";
     print "DTEND:". date($format, $pto["end"]) ."\n";
     print "END:VEVENT\n";
