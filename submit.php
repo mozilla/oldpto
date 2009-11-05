@@ -51,11 +51,11 @@ mysql_select_db($mysql["database"]);
 
 if ($is_editing && !$is_hr) {
   // Can the user edit it?
-  $query_string = 
-    "SELECT id FROM pto WHERE ". 
+  $query_string =
+    "SELECT id FROM pto WHERE ".
     "id = ". (string)$id ." AND ".
-    'person = "'. $notifier_email ." AND ".
-    "end < ". (string)time() .
+    'person = "'. $notifier_email .'" AND '.
+    "end >= ". (string)time() .
     ';';
   $query = mysql_query($query_string);
   $id = mysql_result($query, 0);
@@ -149,7 +149,7 @@ foreach ($tokens as $token => $replacement) {
 
 if (ENABLE_DB) {
   if ($is_editing) {
-    $query_string = 
+    $query_string =
       "UPDATE pto SET ".
       'person = "'. $notifier_email .'", '.
       'details = "'. mysql_real_escape_string($_POST["details"]) .'", '.
@@ -160,7 +160,7 @@ if (ENABLE_DB) {
       ';'
     ;
   } else {
-    $query_string = 
+    $query_string =
       "INSERT INTO pto (person, details, hours, start, end, added) VALUES(".
       '"'. $notifier_email .'", '.
       '"'. mysql_real_escape_string($_POST["details"]) .'", '.
