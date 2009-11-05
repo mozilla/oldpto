@@ -55,7 +55,7 @@ if ($is_editing && !$is_hr) {
     "SELECT id FROM pto WHERE ". 
     "id = ". (string)$id ." AND ".
     'person = "'. $notifier_email ." AND ".
-    "end > ". (string)time() .
+    "end < ". (string)time() .
     ';';
   $query = mysql_query($query_string);
   $id = mysql_result($query, 0);

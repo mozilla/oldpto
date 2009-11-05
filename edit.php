@@ -5,7 +5,7 @@ require_once("auth.php");
 
 $data = ldap_find(
   $connection,
-  "mail=". $_SERVER["PHP_AUTH_USER"], 
+  "mail=". $_SERVER["PHP_AUTH_USER"],
   array("cn", "manager")
 );
 $notifier_email = $_SERVER["PHP_AUTH_USER"];
