@@ -72,7 +72,7 @@ require_once "./templates/header.php";
     Formats:
     <ul>
     <li class="active" title="You're lookin' at it">Table</li>
-    <li><a class="format" href="?format=csv" id="format-csv" title="Good for spreadsheet software">CSV</a></li>
+    <li><a class="format" href="?format=csv" id="format-csv" title="Good for spreadsheet software">CSV / Excel</a></li>
     <li><a class="format" href="?format=atom" id="format-atom" title="Good for feed readers">Atom</a></li>
     <li><a class="format" href="?format=ical" id="format-ical" title="Good for calendar apps">iCal</a></li>
     <li><a class="format" href="?format=json" id="format-json" title="Good for mash-ups">JSON</a></li>
@@ -162,7 +162,7 @@ require_once "./templates/header.php";
         });
         opts.from && (opts.from += "000");
         opts.to && (opts.to += "000");
-        fetch(opts);
+        fetch("all" in opts ? {} : opts);
       } else {
         $("#view-month").click(); // Fire "View This Month"
       }
@@ -203,7 +203,7 @@ require_once "./templates/header.php";
         var url = "?format=" + $(this).attr("id").replace(/^format-/, '');
         $(this).attr("href", url + (opts ? '&' + opts : ''));
       });
-      window.location.hash = opts;
+      window.location.hash = (opts == "") ? "all" : opts;
       $.getJSON("export.php", $.extend({format: "json"}, options), inject);
     }
 
@@ -214,7 +214,7 @@ require_once "./templates/header.php";
     function inject(data) {
       var preferredOrder = "id|givenName|sn|added|hours|start|end|details".split('|');
       var fieldNames = {
-        id: "ID", givenName: "First name", sn: "Last name", added: "Added on",
+        id: "ID", givenName: "First name", sn: "Last name", added: "Date filed",
         hours: "Hours", start: "Start", end: "End", details: "Details"
       };
       var presentFields = [];

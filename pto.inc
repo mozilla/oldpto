@@ -20,6 +20,16 @@ function maketime($slashed_date) {
   return $t;
 }
 
+/* Why yes, this name is confusing enough. */
+function parse_date($date_to_parse) {
+  $p = date_parse($date_to_parse);
+  return mktime(0, 0, 0, $p["month"], $p["day"], $p["year"]);
+}
+
+function reformat_date($date_to_parse, $format, $f="date") {
+  return $f($format, parse_date($date_to_parse));
+}
+
 function email_to_alias($email) {
   $alias = explode('@', $email);
   return $alias[0];

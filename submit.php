@@ -3,6 +3,7 @@ require_once("config.php");
 require_once("pto.inc");
 require_once("auth.php");
 
+// Validate the input format for various fields.
 $validations = array(
   "hours" => '/^[1-9]\d*$|^\d*\.\d$/',
   "start" => '/^[01]\d\/[0-3]\d\/\d{4}$/',
@@ -23,6 +24,15 @@ if (!empty($failures)) {
   require_once "./templates/footer.php";
   die;
 }
+
+// Dismantle attempts to create a temporal paradox.
+if (parse_date($_POST["end"]) < parse_date($_POST["start"])) {
+  require_once "./templates/header.php";
+  print "<form><p>Temporal paradox! Your PTO ends before it starts!</p></form>";
+  require_once "./templates/footer.php";
+  die;
+}
+
 $is_editing = $_POST["edit"] == "1";
 $id = isset($_POST["id"]) ? (int)$_POST["id"] : NULL;
 
@@ -124,8 +134,8 @@ $tokens = array(
   "%notifier%" => $notifier_name,
   "%editor%" => $notifier_name,
   "%hours%" => $hours,
-  "%start%" => $_POST["start"],
-  "%end%" => $_POST["end"],
+  "%start%" => reformat_date($_POST["start"], "M j, Y"),
+  "%end%" => reformat_date($_POST["end"], "M j, Y"),
   "%details%" => $_POST["details"]
 );
 

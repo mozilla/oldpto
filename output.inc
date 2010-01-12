@@ -1,6 +1,6 @@
 <?php
 function output_json($data) {
-  $correct_mime = FALSE;
+  $correct_mime = TRUE;
   if (strpos($_SERVER["HTTP_ACCEPT"], "application/json") !== FALSE ||
       $_GET["valid_mime"] == '1') {
     $correct_mime = TRUE;
@@ -44,14 +44,15 @@ function output_csv($data) {
   );
   $field_name_mapping = array(
     "id" => "PTO ID", "givenName" => "First name", "sn" => "Last name",
-    "added" => "Added", "hours" => "Hours", "details" => "Details",
+    "added" => "Date filed", "hours" => "Hours", "details" => "Details",
     "start" => "Start", "end" => "End"
   );
   $field_names = array();
   foreach ($fields as $field) {
     $field_names[] = $field_name_mapping[$field];
   }
-  fputcsv($f, $field_names);
+  # Excel assumes semicolons to be field separators by default.
+  fputcsv($f, $field_names, ";");
   foreach ($data as $pto) {
     $row = array();
     foreach ($fields as $field) {
@@ -61,7 +62,7 @@ function output_csv($data) {
       }
       $row[] = $pto[$field];
     }
-    fputcsv($f, $row);
+    fputcsv($f, $row, ";");
   }
   fclose($f);
   die;
