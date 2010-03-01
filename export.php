@@ -25,6 +25,16 @@ $fields = $is_hr ? '*' : "id, person, added, hours, start, end";
 $query = mysql_query(
   "SELECT ". $fields ." FROM pto ". $conditions ."ORDER BY added DESC;"
 );
+
+
+$user_cache = array();
+$search = ldap_search($connection, "o=com,dc=mozilla",
+                      "mail=*", array("mail", "givenName", "sn"));
+$match = ldap_get_entries($connection, $search);
+for ($i = 0; $i < $match["count"]; $i++) {
+  $user_cache[$row["mail"][0]] = $match[$i];
+}
+
 $results = array();
 while ($row = mysql_fetch_assoc($query)) {
   foreach (array("id", "added", "start", "end") as $field) {
@@ -32,11 +42,8 @@ while ($row = mysql_fetch_assoc($query)) {
   }
   $row["hours"] = (double)$row["hours"];
 
-  $search = ldap_search($connection, "dc=mozilla",
-                        "mail=". $row["person"] ."*", array("givenName", "sn"));
-  $match = ldap_get_entries($connection, $search);
-  $row["sn"] = $match[0]["sn"][0];
-  $row["givenName"] = $match[0]["givenname"][0];
+  $row["sn"] = $user_cache[$row["person"]]["sn"][0];
+  $row["givenName"] = $user_cache[$row["person"]]["givenname"][0];
 
   $results[] = $row;
 }
