@@ -32,6 +32,7 @@ $search = ldap_search($connection, "o=com,dc=mozilla",
                       "mail=*", array("mail", "givenName", "sn"));
 $match = ldap_get_entries($connection, $search);
 for ($i = 0; $i < $match["count"]; $i++) {
+  $row = $match[$i];
   $user_cache[$row["mail"][0]] = $match[$i];
 }
 
