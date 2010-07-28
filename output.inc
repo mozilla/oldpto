@@ -40,7 +40,7 @@ function output_csv($data) {
   }
   $f = fopen("php://output", 'w');
   $fields = array(
-    "id", "givenName", "sn", "added", "hours", "details", "start", "end"
+    "id", "givenName", "sn", "added", "hours", /*"details",*/ "start", "end"
   );
   $field_name_mapping = array(
     "id" => "PTO ID", "givenName" => "First name", "sn" => "Last name",
@@ -51,8 +51,8 @@ function output_csv($data) {
   foreach ($fields as $field) {
     $field_names[] = $field_name_mapping[$field];
   }
-  # Excel assumes semicolons to be field separators by default.
-  fputcsv($f, $field_names, ";");
+
+  fputcsv($f, $field_names, ",");
   foreach ($data as $pto) {
     $row = array();
     foreach ($fields as $field) {
@@ -62,7 +62,7 @@ function output_csv($data) {
       }
       $row[] = $pto[$field];
     }
-    fputcsv($f, $row, ";");
+    fputcsv($f, $row, ",");
   }
   fclose($f);
   die;
