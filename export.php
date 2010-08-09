@@ -28,12 +28,14 @@ $query = mysql_query(
 
 
 $user_cache = array();
-$search = ldap_search($connection, "o=com,dc=mozilla",
-                      "mail=*", array("mail", "givenName", "sn"));
+$search = ldap_search(
+  $connection, "o=com,dc=mozilla", "mail=*",
+  array("mail", "givenName", "sn", "physicalDeliveryOfficeName")
+);
 $match = ldap_get_entries($connection, $search);
 for ($i = 0; $i < $match["count"]; $i++) {
   $row = $match[$i];
-  $user_cache[$row["mail"][0]] = $match[$i];
+  $user_cache[$row["mail"][0]] = $row;
 }
 
 $results = array();
@@ -43,8 +45,10 @@ while ($row = mysql_fetch_assoc($query)) {
   }
   $row["hours"] = (double)$row["hours"];
 
-  $row["sn"] = $user_cache[$row["person"]]["sn"][0];
-  $row["givenName"] = $user_cache[$row["person"]]["givenname"][0];
+  $key = $row["person"];
+  $row["sn"] = $user_cache[$key]["sn"][0];
+  $row["givenName"] = $user_cache[$key]["givenname"][0];
+  $row["location"] = $user_cache[$key]["physicaldeliveryofficename"][0];
 
   $results[] = $row;
 }
@@ -52,7 +56,7 @@ while ($row = mysql_fetch_assoc($query)) {
 // Try the specified format first
 $output_function = "output_". $_GET["format"];
 if (function_exists($output_function)){
-  call_user_func($output_function, $results);
+  call_user_func($output_function, $results, $from_time, $to_time);
 } elseif (!isset($_GET["format"])) {
   // Don't do anything. Fall through to exporting as pretty HTML.
 } else {
@@ -220,10 +224,11 @@ require_once "./templates/header.php";
     };
 
     function inject(data) {
-      var preferredOrder = "id|givenName|sn|added|hours|start|end|details".split('|');
+      var preferredOrder = "id|givenName|sn|added|hours|start|end|location|details".split('|');
       var fieldNames = {
         id: "ID", givenName: "First name", sn: "Last name", added: "Date filed",
-        hours: "Hours", start: "Start", end: "End", details: "Details"
+        hours: "Hours", start: "Start", end: "End", details: "Details",
+        location: "Location"
       };
       var presentFields = [];
       for (var field in data[0]) { presentFields.push(field); }
@@ -237,7 +242,9 @@ require_once "./templates/header.php";
       var formatters = {
         id: K, person: function(x) { return x.replace(/@mozilla.*$/, ''); },
         hours: K, added: fdate, start: fdate, end: fdate, details: K,
-        givenName: NA, sn: NA
+        givenName: NA, sn: NA, location: function(s) {
+          return !s ? NA(s) : s.replace(':::', '/');
+        }
       };
 
       $("#pto table").remove();
@@ -271,7 +278,10 @@ require_once "./templates/header.php";
       });
 
       if (data.length == 0) {
-        code.push('<tr><td colspan="6" id="no-match">No matching data.</td></tr>');
+        code.push(
+          '<tr><td colspan="' + preferredOrder.length + 
+          '" id="no-match">No matching data.</td></tr>'
+        );
       }
 
       $("#pto tbody").html(code.join(''));

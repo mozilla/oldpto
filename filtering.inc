@@ -26,8 +26,8 @@ if ($from_time || $to_time) {
   if (!$from_time) { $from_time = 0; }
   if (!$to_time) { $to_time = time(); }
   $filters = array();
-  $filters[] = "((end BETWEEN ". $from_time ." AND ". $to_time .") OR (start BETWEEN ". $from_time ." AND ". $to_time ."))";
-  $filters[] = "((". $from_time ." BETWEEN start AND end) AND (". $to_time ." BETWEEN start and END))";
+  $filters[] = "((end BETWEEN $from_time AND $to_time) OR (start BETWEEN $from_time AND $to_time))";
+  $filters[] = "(($from_time BETWEEN start AND end) AND ($to_time BETWEEN start and END))";
   $conditions[] = implode(" OR ", $filters);
 }
 
@@ -44,5 +44,5 @@ if (!empty($_GET["id"])) {
 // Join all WHERE clauses
 $conditions = implode(" AND ", $conditions);
 if (!empty($conditions)) {
-  $conditions = "WHERE ". $conditions .' ';
+  $conditions = "WHERE $conditions ";
 }

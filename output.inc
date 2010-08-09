@@ -1,5 +1,5 @@
 <?php
-function output_json($data) {
+function output_json($data, $from, $to) {
   $correct_mime = TRUE;
   if (strpos($_SERVER["HTTP_ACCEPT"], "application/json") !== FALSE ||
       $_GET["valid_mime"] == '1') {
@@ -11,7 +11,7 @@ function output_json($data) {
   die;
 }
 
-function output_sql($data) {
+function output_sql($data, $from, $to) {
   header("Content-Type: text/plain");
   print "INSERT INTO `pto` (`id`, `person`, `added`, `hours`, `details`, `start`, `end`) VALUES\n";
   $buffer = array();
@@ -28,7 +28,9 @@ function output_sql($data) {
   die;
 }
 
-function output_csv($data) {
+function output_csv($data, $from, $to) {
+  $sep = ",";
+  $fmt = "m/d/y";
   $correct_mime = TRUE;
   if ($_GET["as_text"] == '1') {
     $correct_mime = FALSE;
@@ -40,41 +42,51 @@ function output_csv($data) {
   }
   $f = fopen("php://output", 'w');
   $fields = array(
-    "id", "givenName", "sn", "added", "hours", /*"details",*/ "start", "end"
+    "id", "givenName", "sn", "added", "hours", "start", "end", "location"
   );
   $field_name_mapping = array(
     "id" => "PTO ID", "givenName" => "First name", "sn" => "Last name",
     "added" => "Date filed", "hours" => "Hours", "details" => "Details",
-    "start" => "Start", "end" => "End"
+    "start" => "Start", "end" => "End", "location" => "Location"
   );
   $field_names = array();
   foreach ($fields as $field) {
     $field_names[] = $field_name_mapping[$field];
   }
 
-  fputcsv($f, $field_names, ",");
+  $range = array(
+    'Report range',
+    $from ? date($fmt, $from) : "Dawn of time",
+    $to ? date($fmt, $to) : "Present time"
+  );
+  fputcsv($f, $range, $sep);
+  fputcsv($f, array(), $sep);
+  fputcsv($f, $field_names, $sep);
   foreach ($data as $pto) {
     $row = array();
     foreach ($fields as $field) {
       // Format the timestamp as an Excel date
       if (in_array($field, array("added", "start", "end"))) {
-        $pto[$field] = date("m/d/y", $pto[$field]);
+        $pto[$field] = date($fmt, $pto[$field]);
+      }
+      if ($field == "location") {
+        $pto[$field] = str_replace(":::", "/", $pto[$field]);
       }
       $row[] = $pto[$field];
     }
-    fputcsv($f, $row, ",");
+    fputcsv($f, $row, $sep);
   }
   fclose($f);
   die;
 }
 
-function output_xml($data) {
+function output_xml($data, $from, $to) {
   header("Content-Type: text/xml");
   print '<?xml version="1.0"?><AreYouKiddingMe><WhateverHappenedToAtom/></AreYouKiddingMe>';
   die;
 }
 
-function output_atom($data) {
+function output_atom($data, $from, $to) {
   $uuid = "e2f436c4-791d-4045-a6e5-52e981bb3db7";
   $protocol = $_SERVER["HTTPS"] ? "https" : "http";
   $path = $protocol ."://". $_SERVER["HTTP_HOST"];
@@ -109,7 +121,7 @@ function output_atom($data) {
   die;
 }
 
-function output_ics($data) {
+function output_ics($data, $from, $to) {
   output_ical($data);
 }
 
@@ -121,7 +133,7 @@ function fold($string, $octets=75, $whitespace=' ') {
   return rtrim($results);
 }
 
-function output_ical($data) {
+function output_ical($data, $from, $to) {
   header("Content-Type: text/calendar");
   header("Content-Disposition: attachment; filename=\"PTOs.ics\"");
   $format = 'Ymd\THis\Z';
