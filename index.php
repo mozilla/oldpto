@@ -12,7 +12,7 @@ $notifier_email = $_SERVER["PHP_AUTH_USER"];
 $notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
-preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
+preg_match("/mail=(.+),o=/", $manager_dn, $matches);
 $manager_email = $matches[1];
 
 $data = ldap_find(

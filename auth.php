@@ -17,12 +17,16 @@ if (!isset($_SERVER["PHP_AUTH_USER"])) {
 } else {
   // Check for validity of login
   $user = $_SERVER["PHP_AUTH_USER"];
-  if (preg_match('/[a-z]+@(mozilla.*)\.(.{3})/', $user, $m)) {
-    if ($m[1] == "mozillamessaging" && $m[2] == "com") {
-      $m[1] = "mozilla";
-      $m[2] = "net";
+  if (preg_match('/[a-z.]+@(.+?)\.(.+)/', $user, $m)) {
+    $o = "net";
+    if (($m[1] == "mozilla" && $m[2] == "com") ||
+        ($m[1] == "mozilla-japan" && $m[2] == "org")) {
+      $o = "com";
+    } elseif (($m[1] == "mozilla" && $m[2] == "org") ||
+              ($m[1] == "mozillafoundation" && $m[2] == "org")) {
+      $o = "org";
     }
-    $dn = "mail=$user,o={$m[2]},dc={$m[1]}";
+    $dn = "mail=$user,o={$o},dc=mozilla";
     $password = $_SERVER["PHP_AUTH_PW"];
   } else {
     wail_and_bail();

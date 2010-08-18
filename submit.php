@@ -33,6 +33,14 @@ if (parse_date($_POST["end"]) < parse_date($_POST["start"])) {
   die;
 }
 
+// Pick off puny, insignificant PTOs.
+if (((int)$_POST["hours"]) < 4) {
+  require_once "./templates/header.php";
+  print "<form><p>A PTO entry needs to be at least 4 hours.</p></form>";
+  require_once "./templates/footer.php";
+  die;
+}
+
 $is_editing = $_POST["edit"] == "1";
 $id = isset($_POST["id"]) ? (int)$_POST["id"] : NULL;
 

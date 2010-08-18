@@ -1,57 +1,5 @@
 <?php
-require_once("config.php");
-require_once("pto.inc");
-require_once("auth.php");
-
-require_once("output.inc");
-
-$c = mysql_connect($mysql["host"], $mysql["user"], $mysql["password"]);
-mysql_select_db($mysql["database"]);
-
-require_once("filtering.inc");
-
-$notifier_email = $_SERVER["PHP_AUTH_USER"];
-$data = ldap_find($connection, "mail=". $notifier_email, array("manager", "cn"));
-$notifier_name = $data[0]["cn"][0];
-
-$manager_dn = $data[0]["manager"][0];
-// "OMG, not querying LDAP for the real email? That's cheating!"
-preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
-$manager_email = $matches[1];
-$is_hr = in_array($manager_email, $hr_managers);
-// Exclude details from non-HR personnel
-$fields = $is_hr ? '*' : "id, person, added, hours, start, end";
-
-$query = mysql_query(
-  "SELECT ". $fields ." FROM pto ". $conditions ."ORDER BY added DESC;"
-);
-
-
-$user_cache = array();
-$search = ldap_search(
-  $connection, "o=com,dc=mozilla", "mail=*",
-  array("mail", "givenName", "sn", "physicalDeliveryOfficeName")
-);
-$match = ldap_get_entries($connection, $search);
-for ($i = 0; $i < $match["count"]; $i++) {
-  $row = $match[$i];
-  $user_cache[$row["mail"][0]] = $row;
-}
-
-$results = array();
-while ($row = mysql_fetch_assoc($query)) {
-  foreach (array("id", "added", "start", "end") as $field) {
-    $row[$field] = (int)$row[$field];
-  }
-  $row["hours"] = (double)$row["hours"];
-
-  $key = $row["person"];
-  $row["sn"] = $user_cache[$key]["sn"][0];
-  $row["givenName"] = $user_cache[$key]["givenname"][0];
-  $row["location"] = $user_cache[$key]["physicaldeliveryofficename"][0];
-
-  $results[] = $row;
-}
+require("prefetch.inc");
 
 // Try the specified format first
 $output_function = "output_". $_GET["format"];
@@ -93,9 +41,9 @@ require_once "./templates/header.php";
   </div>
   <div id="pto"></div>
 
-  <script type="text/javascript" src="./js/jquery.strftime-minified.js"></script>
-  <script type="text/javascript" src="./js/jquery.tablesorter.js"></script>
-  <script type="text/javascript">
+  <script src="./js/jquery.strftime-minified.js"></script>
+  <script src="./js/jquery.tablesorter.js"></script>
+  <script>
   window.isHR = <?= json_encode($is_hr) ?>;
   jQuery.noConflict();
   (function($) {
@@ -294,7 +242,7 @@ require_once "./templates/header.php";
 
   })(jQuery);
 </script>
-<style type="text/css">
+<style>
   section {
     -moz-border-radius: none;
     background-color: transparent;
