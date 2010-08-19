@@ -1,18 +1,22 @@
 <?php
-function output_json($data, $from, $to) {
+function output_json($data, $from, $to, $send_headers=TRUE) {
   $correct_mime = TRUE;
   if (strpos($_SERVER["HTTP_ACCEPT"], "application/json") !== FALSE ||
       $_GET["valid_mime"] == '1') {
     $correct_mime = TRUE;
   }
 
-  header("Content-Type: ". ($correct_mime ? "application/json" : "application/javascript"));
+  if ($send_headers) {
+    header("Content-Type: ". ($correct_mime ? "application/json" : "application/javascript"));
+  }
   print json_encode($data);
   die;
 }
 
-function output_sql($data, $from, $to) {
-  header("Content-Type: text/plain");
+function output_sql($data, $from, $to, $send_headers=TRUE) {
+  if ($send_headers) {
+    header("Content-Type: text/plain");
+  }
   print "INSERT INTO `pto` (`id`, `person`, `added`, `hours`, `details`, `start`, `end`) VALUES\n";
   $buffer = array();
   foreach ($data as $e) {
@@ -28,7 +32,7 @@ function output_sql($data, $from, $to) {
   die;
 }
 
-function output_csv($data, $from, $to) {
+function output_csv($data, $from, $to, $send_headers=TRUE) {
   $sep = ",";
   $fmt = "m/d/y";
   $correct_mime = TRUE;
@@ -36,9 +40,11 @@ function output_csv($data, $from, $to) {
     $correct_mime = FALSE;
   }
 
-  header("Content-Type: ". ($correct_mime ? "text/csv" : "text/plain"));
-  if ($correct_mime) {
-    header("Content-Disposition: attachment; filename=\"PTOs.csv\"");
+  if ($send_headers) {
+    header("Content-Type: ". ($correct_mime ? "text/csv" : "text/plain"));
+    if ($correct_mime) {
+      header("Content-Disposition: attachment; filename=\"PTOs.csv\"");
+    }
   }
   $f = fopen("php://output", 'w');
   $fields = array(
@@ -80,19 +86,23 @@ function output_csv($data, $from, $to) {
   die;
 }
 
-function output_xml($data, $from, $to) {
-  header("Content-Type: text/xml");
+function output_xml($data, $from, $to, $send_headers=TRUE) {
+  if ($send_headers) {
+    header("Content-Type: text/xml");
+  }
   print '<?xml version="1.0"?><AreYouKiddingMe><WhateverHappenedToAtom/></AreYouKiddingMe>';
   die;
 }
 
-function output_atom($data, $from, $to) {
+function output_atom($data, $from, $to, $send_headers=TRUE) {
   $uuid = "e2f436c4-791d-4045-a6e5-52e981bb3db7";
   $protocol = $_SERVER["HTTPS"] ? "https" : "http";
   $path = $protocol ."://". $_SERVER["HTTP_HOST"];
   $self = $path . $_SERVER["REQUEST_URI"];
   $document = $path . $_SERVER["PHP_SELF"];
-  header("Content-Type: application/atom+xml");
+  if ($send_headers) {
+    header("Content-Type: application/atom+xml");
+  }
   print '<?xml version="1.0" encoding="utf-8"?>';
   print '<feed xmlns="http://www.w3.org/2005/Atom">';
   print "<title>PTO Search</title>";
@@ -121,8 +131,8 @@ function output_atom($data, $from, $to) {
   die;
 }
 
-function output_ics($data, $from, $to) {
-  output_ical($data);
+function output_ics($data, $from, $to, $send_headers=TRUE) {
+  output_ical($data, $from, $to, $send_headers);
 }
 
 function fold($string, $octets=75, $whitespace=' ') {
@@ -133,9 +143,11 @@ function fold($string, $octets=75, $whitespace=' ') {
   return rtrim($results);
 }
 
-function output_ical($data, $from, $to) {
-  header("Content-Type: text/calendar");
-  header("Content-Disposition: attachment; filename=\"PTOs.ics\"");
+function output_ical($data, $from, $to, $send_headers=TRUE) {
+  if ($send_headers) {
+    header("Content-Type: text/calendar");
+    header("Content-Disposition: attachment; filename=\"PTOs.ics\"");
+  }
   $format = 'Ymd\THis\Z';
   ob_start();
   print <<<EOD

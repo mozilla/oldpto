@@ -26,7 +26,7 @@ function generate_report($results, $from_time, $to_time) {
   $filters = array();
   $filters[] = "((end BETWEEN $s AND $to_time) OR (start BETWEEN $s AND $to_time))";
   $filters[] = "(($s BETWEEN start AND end) AND ($to_time BETWEEN start and END))";
-  $conditions[] = implode(" OR ", $filters);
+  $conditions[] = "(". implode(" OR ", $filters) .")";
   
   $people = array_keys($consolidation);
   $queried_people = array();
@@ -35,6 +35,7 @@ function generate_report($results, $from_time, $to_time) {
   }
   $queried_people = implode(", ", $queried_people);
   $conditions[] = "(person IN ($queried_people))";
+  $is_single_person = count($people) == 1;
 
   // Join all WHERE clauses
   $conditions = implode(" AND ", $conditions);
@@ -42,20 +43,28 @@ function generate_report($results, $from_time, $to_time) {
     $conditions = "WHERE $conditions ";
   }
 
-  $fields = "person, hours, start, end";
+  $fields = LIMITED_FIELDS;
   $query = mysql_query(
     "SELECT $fields FROM pto $conditions ORDER BY added DESC;"
   );
   $running = array();
+  $results = array();
+  global $user_cache;
   while ($row = mysql_fetch_assoc($query)) {
     $person = $row["person"];
     if (!isset($running[$person])) {
       // 0 is the sum, the rest are individual months.
       $running[$person] = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
-    $date = getdate($row['start']);
+    $date = getdate($row["start"]);
     $running[$person][$date["mon"]] += $row["hours"];
     $running[$person][0] += $row["hours"];
+
+    $key = $person;
+    $row["sn"] = $user_cache[$key]["sn"][0];
+    $row["givenName"] = $user_cache[$key]["givenname"][0];
+    $row["location"] = $user_cache[$key]["physicaldeliveryofficename"][0];
+    $results[] = $row;
   }
 
   // header("Content-Type: text/plain");
@@ -80,6 +89,11 @@ function generate_report($results, $from_time, $to_time) {
       $consolidation[$person]["givenName"], $consolidation[$person]["sn"],
       $consolidation[$person]["hours"], ""
     ), $running[$person]), $sep);
+  }
+
+  if ($is_single_person) {
+    fputcsv($f, array(), $sep);
+    output_csv($results, $from_time, $to_time, FALSE);
   }
 }
 

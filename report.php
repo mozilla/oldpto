@@ -26,12 +26,20 @@ require_once "./templates/header.php";
     the time span of two weeks, which is the frequency at which pay days occur.
     The start and end of this time span should always be in the same year.
   </p>
+  <p>
+    If Person is left blank, all employees will be reported. The field accepts
+    the username of one's email address to look up. That is to say, the part 
+    before the @ sign of an email address. The lookup will only be considered
+    successful when there is precisely one hit.
+  </p>
   <ul id="views">
     <li id="range">
       For date from 
       <input type="text" id="from" size="10" value="yyyy/mm/dd" /> to 
       <input type="text" id="to" size="10" value="yyyy/mm/dd" />
       <button id="generate">Generate Report</button>
+      for person
+      <input type="text" id="person" size="20" />
       <!--<span id="loading">Loading...</span>-->
     </li>
   </ul>
@@ -54,7 +62,9 @@ jQuery.noConflict();
       }
       from = from.toTimestamp();
       to = to.toTimestamp();
-      window.location = '?format=csv&from=' + from + '&to=' + to;
+      var person = encodeURIComponent($("#person").val());
+      var loc = '?format=csv&from=' + from + '&to=' + to + '&person=' + person;
+      window.location = loc;
     });
   });
 })(jQuery);

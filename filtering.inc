@@ -28,12 +28,12 @@ if ($from_time || $to_time) {
   $filters = array();
   $filters[] = "((end BETWEEN $from_time AND $to_time) OR (start BETWEEN $from_time AND $to_time))";
   $filters[] = "(($from_time BETWEEN start AND end) AND ($to_time BETWEEN start and END))";
-  $conditions[] = implode(" OR ", $filters);
+  $conditions[] = "(". implode(" OR ", $filters) .")";
 }
 
 // Person filtering / querying
 if (!empty($_GET["person"])) {
-  $conditions[] = 'person LIKE "%'. htmlspecialchars($_GET["person"], ENT_QUOTES) .'%mozilla%"';
+  $conditions[] = "person LIKE '%". htmlspecialchars($_GET["person"], ENT_QUOTES) ."%'";
 }
 
 // ID overrides everything else
