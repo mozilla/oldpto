@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `pto` (
   `person` varchar(128) NOT NULL,
   `added` int(11) NOT NULL,
   `hours` float unsigned NOT NULL,
+  `hours_daily` text NOT NULL,
   `details` varchar(255) NOT NULL,
   `start` int(11) NOT NULL,
   `end` int(11) NOT NULL,
@@ -13,3 +14,6 @@ CREATE TABLE IF NOT EXISTS `pto` (
   FULLTEXT KEY `person` (`person`),
   FULLTEXT KEY `details` (`details`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+/*ALTER TABLE `pto` ADD COLUMN `hours_daily` text NOT NULL after `hours`;*/
+

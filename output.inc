@@ -1,16 +1,49 @@
 <?php
-function output_json($data, $from, $to, $send_headers=TRUE) {
-  $correct_mime = TRUE;
-  if (strpos($_SERVER["HTTP_ACCEPT"], "application/json") !== FALSE ||
-      $_GET["valid_mime"] == '1') {
-    $correct_mime = TRUE;
-  }
 
-  if ($send_headers) {
-    header("Content-Type: ". ($correct_mime ? "application/json" : "application/javascript"));
-  }
-  print json_encode($data);
-  die;
+function output_json($data, $from, $to, $send_headers=TRUE) {
+	$correct_mime = TRUE;
+	if (strpos($_SERVER["HTTP_ACCEPT"], "application/json") !== FALSE || $_GET["valid_mime"] == '1') {
+		$correct_mime = TRUE;
+	}
+	if ($send_headers) {
+		header("Content-Type: ". ($correct_mime ? "application/json" : "application/javascript"));
+	}
+	if (isset($_GET['user']) && $_GET['user']) {
+		$sUserEmail = $_GET['user'];
+	}
+	
+	// Format for dataTable
+	$aFormattedData = array();
+	foreach ($data as $aRecord) {
+		$sEditLink = ($aRecord['email'] == $sUserEmail
+			? '<a href="./edit.php?id='.$aRecord['id'].'">Edit</a>'
+			: ''
+		);
+		
+		$sViewHoursDailyLink = (strlen($aRecord['hours_daily']) > 3 
+			? '<a href="javascript:viewHoursDaily(\''.urlencode($aRecord['hours_daily']).'\')">More</a>'
+			: ''
+		);
+		
+		$aFormattedData[] = array(
+			$aRecord['email'],
+			$aRecord['id'],
+			$aRecord['first_name'],
+			$aRecord['last_name'],
+			date('Y-m-d', $aRecord['filed_date']),
+			$aRecord['pto_hours'],
+			date('Y-m-d', $aRecord['start_date']),
+			date('Y-m-d', $aRecord['end_date']),
+			str_replace(' ', '&nbsp;', $aRecord['city']), 
+			$aRecord['country'],
+			$aRecord['details'],
+			$sEditLink,
+			$sViewHoursDailyLink
+		);
+	}
+	print json_encode(array('aaData'=>$aFormattedData));
+	
+	exit;
 }
 
 function output_sql($data, $from, $to, $send_headers=TRUE) {
@@ -24,8 +57,8 @@ function output_sql($data, $from, $to, $send_headers=TRUE) {
       $e["details"] = '';
     }
     $buffer[] = sprintf("(%d, '%s', %d, %F, '%s', %d, %d)",
-                        $e["id"], $e["person"], $e["added"], $e["hours"],
-                        $e["details"], $e["start"], $e["end"]);
+                        $e["id"], $e["email"], $e["filed_date"], $e["pto_hours"],
+                        $e["details"], $e["start_date"], $e["end_date"]);
   }
   print implode(", \n", $buffer);
   print ";";
@@ -33,56 +66,48 @@ function output_sql($data, $from, $to, $send_headers=TRUE) {
 }
 
 function output_csv($data, $from, $to, $send_headers=TRUE) {
-  $sep = ",";
-  $fmt = "m/d/y";
-  $correct_mime = TRUE;
-  if ($_GET["as_text"] == '1') {
-    $correct_mime = FALSE;
-  }
-
-  if ($send_headers) {
-    header("Content-Type: ". ($correct_mime ? "text/csv" : "text/plain"));
-    if ($correct_mime) {
-      header("Content-Disposition: attachment; filename=\"PTOs.csv\"");
-    }
-  }
-  $f = fopen("php://output", 'w');
-  $fields = array(
-    "id", "givenName", "sn", "added", "hours", "start", "end", "location"
-  );
-  $field_name_mapping = array(
-    "id" => "PTO ID", "givenName" => "First name", "sn" => "Last name",
-    "added" => "Date filed", "hours" => "Hours", "details" => "Details",
-    "start" => "Start", "end" => "End", "location" => "Location"
-  );
-  $field_names = array();
-  foreach ($fields as $field) {
-    $field_names[] = $field_name_mapping[$field];
-  }
-
-  $range = array(
-    'Report range',
-    $from ? date($fmt, $from) : "Dawn of time",
-    $to ? date($fmt, $to) : "Present time"
-  );
-  fputcsv($f, $range, $sep);
-  fputcsv($f, array(), $sep);
-  fputcsv($f, $field_names, $sep);
-  foreach ($data as $pto) {
-    $row = array();
-    foreach ($fields as $field) {
-      // Format the timestamp as an Excel date
-      if (in_array($field, array("added", "start", "end"))) {
-        $pto[$field] = date($fmt, $pto[$field]);
-      }
-      if ($field == "location") {
-        $pto[$field] = str_replace(":::", "/", $pto[$field]);
-      }
-      $row[] = $pto[$field];
-    }
-    fputcsv($f, $row, $sep);
-  }
-  fclose($f);
+	if (!isset($data[0])) {
+		print "No information matches your query";
+		die();
+	}
+	
+	if ($send_headers) {
+		header("Content-Type: text/csv");
+		header("Content-Disposition: attachment; filename=\"PTOs.csv\"");
+	}
+	$aFields = array(
+		'Id',
+		'First Name',
+		'Last Name',
+		'Email',
+		'Start Date',
+		'End Date',
+		'Filed Date',
+		'PTO Hours',
+		'City',
+		'Country',
+		'Details'
+	);
+	$sFields = '';
+	for ($n=0; $n<count($aFields); $n++) {
+		$aFields[$n] = ucwords(str_replace('_',' ',$aFields[$n]));
+	}
+	print implode(', ', $aFields)."\n";
+	foreach ($data as $aRecord) {
+		$aFormattedRecord = array();
+		foreach ($aRecord as $sKey=>$sValue) {
+			switch ($sKey) {
+				case 'start_date':
+				case 'end_date':
+				case 'filed_date':
+					$aFormattedRecord[] = '"'.date('Y-m-d',$sValue).'"';
+					break;
+				default:
+					$aFormattedRecord[] = '"'.$sValue.'"';
+			}
+		}
+		print implode(',', $aFormattedRecord)."\n";
+	} 
   die;
 }
 
@@ -111,19 +136,17 @@ function output_atom($data, $from, $to, $send_headers=TRUE) {
   print "<updated>". date(DATE_ATOM) ."</updated>";
   print "<author><name>Mozilla PTO</name></author>";
   foreach ($data as $pto) {
-    $pto["email"] = $pto["person"];
-    # $pto["person"] = email_to_alias($pto["person"]);
-    $fn = $pto["givenName"];
-    $sn = $pto["sn"];
-    $start = date("m/d/y", $pto["start"]);
-    $end = date("m/d/y", $pto["end"]);
+    $fn = $pto["first_name"];
+    $sn = $pto["last_name"];
+    $start = date("m/d/y", $pto["start_date"]);
+    $end = date("m/d/y", $pto["end_date"]);
     $range = ($start == $end) ? "on $start" : "from $start to $end";
     print "<entry>";
       print "<title>$fn $sn $range</title>";
       print "<id>$document?id={$pto["id"]}</id>";
       print "<link href=\"$document?id={$pto["id"]}\" />";
       print "<author><name>$fn $sn</name><email>{$pto['email']}</email></author>";
-      print "<updated>". date(DATE_ATOM, $pto["added"]) ."</updated>";
+      print "<updated>". date(DATE_ATOM, $pto["filed_date"]) ."</updated>";
       print "<summary>". htmlspecialchars($pto["details"]) ."</summary>";
     print "</entry>";
   }
@@ -161,8 +184,8 @@ X-WR-CALNAME:PTOs
 
 EOD;
   foreach ($data as $pto) {
-    $fn = $pto["givenName"];
-    $sn = $pto["sn"];
+    $fn = $pto["first_name"];
+    $sn = $pto["last_name"];
     # $pto["person"] = email_to_alias($pto["person"]);
     // Line breaks and commas must be escaped.
     $pto["details"] = str_replace(", ", '\, ', $pto["details"]);
@@ -173,11 +196,11 @@ EOD;
     // Outlook 2003 requires both UID and DTSTAMP.
     print "UID:{$pto['id']}\n";
     print "TRANSP:OPAQUE\n";
-    print "DTSTART:". date($format, $pto["start"]) ."\n";
-    print "DTSTAMP:". date($format, $pto["added"]) ."\n";
+    print "DTSTART:". date($format, $pto["start_date"]) ."\n";
+    print "DTSTAMP:". date($format, $pto["field_date"]) ."\n";
     print "SUMMARY:PTO of $fn $sn\n";
-    print "CREATED:". date($format, $pto["added"]) ."\n";
-    print "DTEND:". date($format, $pto["end"]) ."\n";
+    print "CREATED:". date($format, $pto["filed_date"]) ."\n";
+    print "DTEND:". date($format, $pto["end_date"]) ."\n";
     print "END:VEVENT\n";
   }
   print "END:VCALENDAR";

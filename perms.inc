@@ -1,7 +1,7 @@
 <?php
 
 if (!defined("LIMITED_FIELDS")) {
-  define("LIMITED_FIELDS", "id, person, added, hours, start, end");
+  define("LIMITED_FIELDS", "id, person, added, hours, start, end, details");
 }
 
 $notifier_email = $_SERVER["PHP_AUTH_USER"];

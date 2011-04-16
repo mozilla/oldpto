@@ -5,7 +5,9 @@
     <meta charset="utf-8" />
     <script src="./js/jquery-1.3.2.min.js"></script>
     <script src="./js/jquery-ui-1.7.2.custom.min.js"></script>
+	<script src="./js/jquery.json-2.2.min.js"></script>
     <script src="./js/jquery.cookie.js"></script>
+	<script src="./js/jquery.dom.js"></script>
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/redmond/jquery-ui-1.7.2.custom.css" />
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />

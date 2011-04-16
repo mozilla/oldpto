@@ -34,8 +34,3 @@ function email_to_alias($email) {
   $alias = explode('@', $email);
   return $alias[0];
 }
-
-function fill($edit, $field) {
-  return isset($edit[$field]) ? ' value="'. $edit[$field] .'"' : '';
-}
-

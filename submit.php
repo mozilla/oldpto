@@ -2,6 +2,9 @@
 require_once("config.php");
 require_once("pto.inc");
 require_once("auth.php");
+require_once("class.Debug.php");
+
+//Debug::showAndDie($_REQUEST);
 
 // Validate the input format for various fields.
 $validations = array(
@@ -11,7 +14,7 @@ $validations = array(
 );
 $failures = array();
 foreach ($validations as $field => $pattern) {
-  if (!preg_match($pattern, $_POST[$field])) {
+  if (!preg_match($pattern, $_REQUEST[$field])) {
     $failures[] = $field;
   }
 }
@@ -26,7 +29,7 @@ if (!empty($failures)) {
 }
 
 // Dismantle attempts to create a temporal paradox.
-if (parse_date($_POST["end"]) < parse_date($_POST["start"])) {
+if (parse_date($_REQUEST["end"]) < parse_date($_REQUEST["start"])) {
   require_once "./templates/header.php";
   print "<form><p>Temporal paradox! Your PTO ends before it starts!</p></form>";
   require_once "./templates/footer.php";
@@ -34,15 +37,17 @@ if (parse_date($_POST["end"]) < parse_date($_POST["start"])) {
 }
 
 // Pick off puny, insignificant PTOs.
-if (((int)$_POST["hours"]) < 4) {
+if (((int)$_REQUEST["hours"]) < 4) {
   require_once "./templates/header.php";
   print "<form><p>A PTO entry needs to be at least 4 hours.</p></form>";
   require_once "./templates/footer.php";
   die;
 }
 
-$is_editing = $_POST["edit"] == "1";
-$id = isset($_POST["id"]) ? (int)$_POST["id"] : NULL;
+if (isset($_REQUEST["id"]) && $_REQUEST["id"]) {
+	$is_editing = true;
+	$id = (int)$_REQUEST["id"];
+}
 
 
 $notifier_email = $_SERVER["PHP_AUTH_USER"];
@@ -75,6 +80,7 @@ if ($is_editing && !$is_hr) {
     'person = "'. $notifier_email .'" AND '.
     "end >= ". (string)time() .
     ';';
+
   $query = mysql_query($query_string);
   $id = mysql_result($query, 0);
   if ($id === FALSE) {
@@ -83,7 +89,7 @@ if ($is_editing && !$is_hr) {
     print "<p>You cannot edit this PTO entry due to one of the following:</p>";
     print "<ul>";
     print "  <li>You are not the one who submitted this PTO entry.</li>";
-    print "  <li>It is now past the end of the PTO.</li>";
+    print "  <li>The PTO you submitted occurs in the past.</li>";
     print "  <li>You just don't have enough power. Ask someone from HR.</li>";
     print "</ul>";
     print "</form>";
@@ -99,13 +105,13 @@ if (ENABLE_MANAGER_NOTIFYING) {
   $notified_people[] = $manager_name ." <". $manager_email .'>';
 }
 // Merge additional inputted people to notify
-if (!empty($_POST["people"])) {
-  $people = array_map("trim", explode(",", $_POST["people"]));
+if (!empty($_REQUEST["people"])) {
+  $people = array_map("trim", explode(",", $_REQUEST["people"]));
   $notified_people = array_merge($notified_people, $people);
 }
 
 // Optionally "cc" the notifier. Yes, it's not real CC.
-if (isset($_POST["cc"]) && $_POST["cc"] == "1") {
+if (isset($_REQUEST["cc"]) && $_REQUEST["cc"] == "1") {
   $notified_people[] = $notifier_name .' <'. $notifier_email .'>';
 }
 
@@ -127,11 +133,12 @@ while ($check = array_pop($notified_people)) {
 }
 $notified_people = $allowed;
 
-$hours = (float)$_POST["hours"];
-# $start_time = isset($_POST["start_time"]) ? $_POST["start_time"] : "00:00 am";
-# $end_time = isset($_POST["end_time"]) ? $_POST["end_time"] : "00:00 am";
-$start = maketime($_POST["start"]);
-$end = maketime($_POST["end"]);
+$hours = (float)$_REQUEST["hours"];
+$hours_daily = isset($_REQUEST['hours_daily']) && $_REQUEST['hours_daily'] ? urldecode($_REQUEST['hours_daily']) : '{}';
+# $start_time = isset($_REQUEST["start_time"]) ? $_REQUEST["start_time"] : "00:00 am";
+# $end_time = isset($_REQUEST["end_time"]) ? $_REQUEST["end_time"] : "00:00 am";
+$start = maketime($_REQUEST["start"]);
+$end = maketime($_REQUEST["end"]);
 
 if ($from == "submitter") {
   $from = $notifier_name .' <'. $notifier_email .'>';
@@ -142,9 +149,9 @@ $tokens = array(
   "%notifier%" => $notifier_name,
   "%editor%" => $notifier_name,
   "%hours%" => $hours,
-  "%start%" => reformat_date($_POST["start"], "M j, Y"),
-  "%end%" => reformat_date($_POST["end"], "M j, Y"),
-  "%details%" => $_POST["details"]
+  "%start%" => reformat_date($_REQUEST["start"], "M j, Y"),
+  "%end%" => reformat_date($_REQUEST["end"], "M j, Y"),
+  "%details%" => $_REQUEST["details"]
 );
 
 $single_day_fix = FALSE;
@@ -170,8 +177,9 @@ if (ENABLE_DB) {
     $query_string =
       "UPDATE pto SET ".
       'person = "'. $notifier_email .'", '.
-      'details = "'. mysql_real_escape_string($_POST["details"]) .'", '.
+      'details = "'. mysql_real_escape_string($_REQUEST["details"]) .'", '.
       'hours = '. (string)$hours .', '.
+	  'hours_daily = "'.mysql_real_escape_string($hours_daily) .'", '.
       'start = '. (string)$start .', '.
       'end = '. (string)$end .' '.
       'WHERE id = '. (string)$id .
@@ -179,16 +187,18 @@ if (ENABLE_DB) {
     ;
   } else {
     $query_string =
-      "INSERT INTO pto (person, details, hours, start, end, added) VALUES(".
+      "INSERT INTO pto (person, details, hours, hours_daily, start, end, added) VALUES(".
       '"'. $notifier_email .'", '.
-      '"'. mysql_real_escape_string($_POST["details"]) .'", '.
+      '"'. mysql_real_escape_string($_REQUEST["details"]) .'", '.
       (string)$hours .', '.
+	  '"'. mysql_real_escape_string($hours_daily) .'", '.
       (string)$start .', '.
       (string)$end .', '.
       (string)time() .
       ");"
     ;
   }
+//Debug::showAndDie($query_string);
   $query = mysql_query($query_string);
 }
 

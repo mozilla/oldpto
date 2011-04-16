@@ -1,260 +1,266 @@
 <?php
-require("prefetch.inc");
 
-// Try the specified format first
-$output_function = "output_". $_GET["format"];
-if (function_exists($output_function)){
-  call_user_func($output_function, $results, $from_time, $to_time);
-} elseif (!isset($_GET["format"])) {
-  // Don't do anything. Fall through to exporting as pretty HTML.
-} else {
-  // Format not supported
-  header("HTTP/1.1 400 Bad Request");
-  die;
-}
+	require("prefetch.inc");
 
-require_once "./templates/header.php";
+	// Try the specified format first
+	$output_function = "output_". $_GET["format"];
+
+	if (function_exists($output_function)){
+		call_user_func($output_function, $results, $from_time, $to_time);
+	} elseif (!isset($_GET["format"])) {
+		// Don't do anything. Fall through to exporting as pretty HTML.
+	} else {
+		// Format not supported
+		header("HTTP/1.1 400 Bad Request");
+		die;
+	}
+
+	require_once "./templates/header.php";
+	
 ?>
-  <p>Herro thar, <span id="user"><?= email_to_alias($notifier_email) ?></span>.
-     We've got all your PTOs right here™.</p>
-  <ul id="views">
-    <li class="view"><a id="view-year">This Year</a></li>
-    <li class="view"><a id="view-month">This Month</a></li>
-    <li class="view"><a id="view-week">This Week</a></li>
-    <li class="view"><a id="view-today">Today</a></li>
-    <li class="view"><a id="view-all">All</a></li>
-    <li id="range"><input type="text" id="from" size="10" /> -
-                   <input type="text" id="to" size="10" />
-                   <button id="filter">Filter</button>
-                   <span id="loading">Loading...</span></li>
-  </ul>
-  <div id="formats">
-    Formats:
-    <ul>
-    <li class="active" title="You're lookin' at it">Table</li>
-    <li><a class="format" href="?format=csv" id="format-csv" title="Good for spreadsheet software">CSV / Excel</a></li>
-    <li><a class="format" href="?format=atom" id="format-atom" title="Good for feed readers">Atom</a></li>
-    <li><a class="format" href="?format=ical" id="format-ical" title="Good for calendar apps">iCal</a></li>
-    <li><a class="format" href="?format=json" id="format-json" title="Good for mash-ups">JSON</a></li>
-    <li><a class="format" href="?format=sql" id="format-sql" title="Good for importing test data">SQL</a></li>
-    </ul>
-  </div>
-  <div id="pto"></div>
 
-  <script src="./js/jquery.strftime-minified.js"></script>
-  <script src="./js/jquery.tablesorter.js"></script>
-  <script>
-  window.isHR = <?= json_encode($is_hr) ?>;
-  jQuery.noConflict();
-  (function($) {
-    Number.prototype.toTimestamp = function() {
-      return Math.round(this.valueOf() / 1000);
-    };
+<form id="filter_form" onsubmit="applyFilter();return false;">
+<table id="filters">
+    <tr>
+		<td>
+			Start date:
+		</td>
+		<td>
+			<input type="text" name="start_date_from" id="start_date_from" class="js-datepicker" autocomplete="off" size="10" /> -
+	        <input type="text" name="start_date_to" id="start_date_to" class="js-datepicker" autocomplete="off" size="10" />
+		</td>
+		<td>
+			Filed date:
+		</td>
+		<td>
+			<input type="text" name="filed_date_from" id="filed_date_from" class="js-datepicker" autocomplete="off" size="10" /> -
+	        <input type="text" name="filed_date_to" id="filed_date_to" class="js-datepicker" autocomplete="off" size="10" />
+		</td>
+		<td>
+			First Name
+		</td>
+		<td>
+			<input type="text" name="first_name" id="first_name" size="20" />
+		</td>
+		<td rowspan="2">
+			<button type="submit">Apply filters</button><br />
+			<button type="reset">Clear filters</button>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			End date:
+		</td>
+		<td>
+			<input type="text" name="end_date_from" id="end_date_from" class="js-datepicker" autocomplete="off" size="10" /> -
+	        <input type="text" name="end_date_to" id="end_date_to" class="js-datepicker" autocomplete="off" size="10" />
+		</td>
+		<td>
+			Country:
+		</td>
+		<td>
+			<select name="country" id="country">
+				<option value="">Any country</option>
+				<?php foreach ($aLdapCountries as $sCountry) : ?>
+					<option value="<?php echo $sCountry; ?>"><?php echo $sCountry; ?></option>
+				<?php endforeach; ?>
+			</select>
+		</td>
+		<td>
+			Last Name:
+		</td>
+		<td>
+			<input type="text" name="last_name" id="last_name" size="20" />
+		</td>
+	</tr>
+</table>
+<div id="formats">
+	Formats:
+	<ul>
+		<li class="active" title="You're lookin' at it">Table</li>
+		<li><a class="format" href="?format=csv" id="format-csv" title="Good for spreadsheet software">CSV / Excel</a></li>
+		<li><a class="format" href="?format=atom" id="format-atom" title="Good for feed readers">Atom</a></li>
+		<li><a class="format" href="?format=ical" id="format-ical" title="Good for calendar apps">iCal</a></li>
+		<li><a class="format" href="?format=json" id="format-json" title="Good for mash-ups">JSON</a></li>
+		<li><a class="format" href="?format=sql" id="format-sql" title="Good for importing test data">SQL</a></li>
+	</ul>
+</div>
+<div id="pto">
+</div>
 
-    $(document).ready(function() {
-      $("#loading").ajaxStart(function() {
-        $(this).addClass("loading");
-      }).ajaxStop(function() {
-        $(this).removeClass("loading");
-      });
+<div class="pto_table_container">
+	<table id="pto_table" class="display">
+		<thead>
+			<tr>
+				<th>Email</th>
+				<th width="1%">Id</th>
+				<th width="15%;">First name</th>
+				<th width="15%;">Last name</th>
+				<th width="80px">Date filed</th>
+				<th width="50px">Hours</th>
+				<th width="80px">Start</th>
+				<th width="80px">End</th>
+				<th width="1%">City</th>
+				<th width="50px">Country</th>
+				<th width="15%">Details</th>
+				<th width="50px">Edit</th>
+				<th width="50px">View hours</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+		<tfooter></tfooter>
+	</table>
+</div>
+<div id="view_hours_daily"></div>
 
-      $("#filter").click(function() {
-        fire({
-          from: Date.parse($("#from").val()).toTimestamp(),
-          to: Date.parse($("#to").val()).toTimestamp()
-        });
-      });
-      $("#from, #to").keypress(function(e) {
-        if (e.which == 13) {
-          $("#filter").click();
-        }
-      });
+<link rel="stylesheet" href="./css/demo_table_jui.css" type="text/css" media="screen" charset="utf-8">
+<style>
+	#formats {
+		font-size: 12px;
+	}
+	#formats a {
+	    line-height: 21px;
+	}
+		#formats li.active {
+			font-weight: bold;
+		}
+	.pto_table_container {
+		background-color: #fafcfc;
+		padding: 3px 10px 12px 10px !important;
+	}
+	#pto_table {
+		margin: 3px 0 5px 0;
+		background-color: #FFF;
+		border: 1px solid #DDD;
+		width: 100% !important;
+	}
+		#pto_table thead {
+			background: #fcfcfe url(img/datatables_header_bg.jpg) bottom repeat-x;
+		}
+		#pto_table tr th {
+			text-align: left;
+			white-space: nowrap;
+			font-weight: bold;
+			border-bottom: 1px solid #FFF;
+			border-right: 1px solid #FFF;
+		}
+		#pto_table tr td {
+			border-right: 1px solid #FFF;
+		}
+	table#filters {
+		background-color: rgba(102, 204, 255, 0.5);
+		padding: 0.5em 0 0.5em 0;
+		border-top-left-radius: 0.5em;
+		border-top-right-radius: 0.5em;
+		-moz-border-radius-topleft: 0.5em;
+		-moz-border-radius-topright: 0.5em;
+		-webkit-border-top-left-radius: 0.5em;
+		-webkit-border-top-right-radius: 0.5em;
+		cursor: default;
+		height: 80px;
+		width: 100%;
+	}
+		table#filters td {
+			margin: 2px 10px;
+		}
+	.column2 {
+		font-weight: bold;
+	}
+</style>
 
-      $("#view-all").click(function() { fetch(); });
+<script src="./js/jquery.strftime-minified.js"></script>
+<script src="./js/jquery.tablesorter.js"></script>
+<script src="./js/jquery.dom.js"></script>
+<script src="./js/jquery.dataTables.min.js"></script>
+<script src="./js/jquery.unserialize.js"></script>
 
-      $("#view-today").click(function() {
-        var d = makeZeroedDates();
-        var from = d[0], to = d[1];
-        to = to.valueOf() + (1000 * 60 * 60 * 24);
-        fetch({from: from, to: to});
-      });
-
-      $("#view-week").click(function() {
-        var d = makeZeroedDates();
-        var from = d[0], to = d[1];
-        // The midnight between Sunday and Monday is the cutoff.
-        // getDay() returns 0 for Sunday, 1 for Monday, etc.
-        from = from.valueOf() - (1000 * 60 * 60 * 24 * (from.getDay() - 1));
-        to = to.valueOf() + (1000 * 60 * 60 * 24 * (7 - (to.getDay() - 1)));
-        fetch({from: from, to: to});
-      });
-
-      $("#view-month").click(function() {
-        var d = makeZeroedDates({methods: ["Date"]});
-        var from = d[0], to = d[1];
-        to.setMonth(to.getMonth() + 1);
-        fetch({from: from, to: to});
-      });
-
-      $("#view-year").click(function() {
-        var d = makeZeroedDates({methods: ["Date", "Month"]});
-        var from = d[0], to = d[1];
-        to.setFullYear(to.getFullYear() + 1);
-        fetch({from: from, to: to});
-      });
-
-      var match;
-      if (match = window.location.search.match(/^\?id=(\d+)/)) {
-        fetch({id: match[1]});
-      } else if (window.location.hash != "") {
-        var opts = {};
-        $.each(window.location.hash.substring(1).split('&'), function() {
-          var pair = this.split('=');
-          var k = pair[0], v = pair.slice(1).join('=');
-          if (!opts[k]) {
-            opts[k] = v;
-          } else if (opts[k] && !$.isArray(opts[k])) {
-            opts[k] = [opts[k]];
-            opts[k].push(v);
-          } else {
-            opts[k].push(v);
-          }
-        });
-        opts.from && (opts.from += "000");
-        opts.to && (opts.to += "000");
-        fetch("all" in opts ? {} : opts);
-      } else {
-        $("#view-month").click(); // Fire "View This Month"
-      }
-    });
-
-    function makeZeroedDates(opts) {
-      opts = opts || {};
-      opts.from = opts.from || new Date();
-      opts.to = opts.to || new Date();
-      opts.methods = opts.methods || [];
-      var methods = "Hours|Minutes|Seconds|Milliseconds".split('|');
-      methods.concat.apply(methods, opts.methods).forEach(function(method) {
-        var val = (method == "Date") ? 1 : 0;
-        if (opts.from) { opts.from["set" + method](val); }
-        if (opts.to) { opts.to["set" + method](val); }
-      });
-      return [opts.from, opts.to];
-    }
-
-    function fetch(options) {
-      options = options || {};
-      if (options.from) {
-        options.from = Math.round(options.from.valueOf() / 1000);
-      }
-      if (options.to) {
-        options.to = Math.round(options.to.valueOf() / 1000);
-      }
-      var from = options.from ? fdate(options.from) : '';
-      var to = options.to ? fdate(options.to) : '';
-      $("#from").val(from);
-      $("#to").val(to);
-      fire(options);
-    }
-
-    function fire(options) {
-      var opts = $.param(options);
-      $("#formats a.format").each(function() {
-        var url = "?format=" + $(this).attr("id").replace(/^format-/, '');
-        $(this).attr("href", url + (opts ? '&' + opts : ''));
-      });
-      window.location.hash = (opts == "") ? "all" : opts;
-      $.getJSON("export.php", $.extend({format: "json"}, options), inject);
-    }
-
-    function fdate(x) {
-      return $.strftime({format: '%Y/%m/%d', dateTime: new Date(x * 1000)});
-    };
-
-    function inject(data) {
-      var preferredOrder = "id|givenName|sn|added|hours|start|end|location|details".split('|');
-      var fieldNames = {
-        id: "ID", givenName: "First name", sn: "Last name", added: "Date filed",
-        hours: "Hours", start: "Start", end: "End", details: "Details",
-        location: "Location"
-      };
-      var presentFields = [];
-      for (var field in data[0]) { presentFields.push(field); }
-      var fields = [];
-      preferredOrder.forEach(function(field) {
-        if (presentFields.indexOf(field) != -1) { fields.push(field); }
-      });
-
-      var K = function(x) { return x; };
-      var NA = function(x) { return x ? x : "<em>N/A</em>"; };
-      var formatters = {
-        id: K, person: function(x) { return x.replace(/@mozilla.*$/, ''); },
-        hours: K, added: fdate, start: fdate, end: fdate, details: K,
-        givenName: NA, sn: NA, location: function(s) {
-          return !s ? NA(s) : s.replace(':::', '/');
-        }
-      };
-
-      $("#pto table").remove();
-
-      var code = ["<table><thead><tr>"];
-      fields.forEach(function(field) {
-        code.push("<th>" + fieldNames[field] + "</th>");
-      });
-      if (data.length != 0) {
-        // Add action header
-        code.push('<th class="action">Action</th>');
-      }
-      code.push("</tr></thead><tbody></tbody></table>");
-
-      $(code.join('')).appendTo("#pto");
-      code = [];
-
-      var user = $("#user").html();
-      data.forEach(function(e) {
-        code.push("<tr>");
-        fields.forEach(function(field) {
-          code.push("<td>" + formatters[field](e[field]) + "</td>")
-        });
-        // Add edit field
-        code.push('<td class="action">');
-        if (window.isHR || formatters.person(e.person) == user) {
-          code.push('<a href="./edit.php?id=' + e.id + '">Edit</a>');
-        }
-        code.push("</td>");
-        code.push("</tr>");
-      });
-
-      if (data.length == 0) {
-        code.push(
-          '<tr><td colspan="' + preferredOrder.length + 
-          '" id="no-match">No matching data.</td></tr>'
-        );
-      }
-
-      $("#pto tbody").html(code.join(''));
-      if (data.length != 0) {
-        opts = {sortList: [[0, 1]], headers: {}};
-        opts.headers[presentFields.length] = {sorter: false};
-        $("#pto table").tablesorter(opts);
-      }
-    }
-
-  })(jQuery);
+<script>
+	var _oldHash = '';
+	function getAjaxSource(sFormat) {
+		sFormat = sFormat || 'json';
+		return 'export.php?format=' + 
+			sFormat + 
+			'&user=<?php echo $notifier_email; ?>&' + 
+			location.hash.substr(1);
+	}
+	function reloadTableData() {
+		$('#pto_table').dataTable().fnReloadAjax(getAjaxSource());
+	}
+	function updateFilterDataFromHash() {
+		$('#filter_form').unserialize(location.hash.substr(1));
+		_oldHash = location.hash;
+	}
+	function applyFilter() {
+		location.hash = $('#filter_form').serialize();
+	}
+	function checkHash() {
+		if (location.hash != _oldHash) {
+			updateFilterDataFromHash();
+			reloadTableData();
+		}
+		setTimeout('checkHash()', 1000);
+	}
+	function viewHoursDaily(sHoursDaily) {
+		sHoursDaily = decodeURIComponent(sHoursDaily);
+		var oHoursDaily = $.evalJSON(sHoursDaily);
+		var oTable = $.TABLE({});
+		for (var sDate in oHoursDaily) {
+			var oDate = new Date(parseInt(sDate));
+			$(oTable).append(
+				$.TR({},
+					$.TD({'class': 'column1'}, oDate.toDateString()),
+					$.TD({'class': 'column2'}, oHoursDaily[sDate] + ' hours of PTO')
+				)
+			);
+		}
+		$("#view_hours_daily").html('');
+		$("#view_hours_daily").append(oTable);
+		$("#view_hours_daily").dialog('open');
+	}
+	$(document).ready(function() {
+		updateFilterDataFromHash();
+		$('#pto_table').dataTable({
+			'bProcessing'		: true,
+			'sAjaxSource'		: getAjaxSource(),
+			'aaSorting'			: [[ 2, 'asc' ],[ 1, 'asc' ],[ 3, 'desc' ]],
+			'aoColumnDefs'		: [{'bSearchable' : false, 'bVisible' : false, 'aTargets' : [ 0 ] }],
+			'sPaginationType'	: 'full_numbers'			
+		});
+		$('#filter').click(function() {
+			reloadTableData()
+		});
+		$('.js-datepicker').datepicker({
+	    	onClose: function() {  }
+	    });
+		$('.format').click(function() {
+			sFormat = this.id.replace('format-', '');
+			location.replace(getAjaxSource(sFormat));
+			return false;
+		});
+		checkHash();
+		
+		$("#view_hours_daily").dialog({ 
+			autoOpen: false,
+			width: 500
+		});
+	});
 </script>
 <style>
-  section {
-    -moz-border-radius: none;
-    background-color: transparent;
-    margin-top: 0;
-    padding: 0;
-  }
-  section p {
-    -moz-border-radius: 0.5em;
-    background-color: white;
-    margin-top: 1em;
-    padding: 1em;
-  }
+	#pto table {
+		width: 100%;
+	}
+	section {
+		-moz-border-radius: none;
+		background-color: transparent;
+		margin-top: 0;
+		padding: 0;
+	}
+	section p {
+		-moz-border-radius: 0.5em;
+		background-color: white;
+		margin-top: 1em;
+		padding: 1em;
+	}
 </style>
 
 <?php require_once "./templates/footer.php"; ?>
