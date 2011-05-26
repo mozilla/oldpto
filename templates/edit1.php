@@ -44,7 +44,7 @@ if ($aErrors) {
 
 <style>
 	#date_discriminator {
-		width: 600px;
+		width: 700px;
 		margin: 0 0 0 220px;
 	}
 	#date_discriminator_panel {
@@ -64,6 +64,12 @@ if ($aErrors) {
 	}
 	.date_discriminator .date_disabled {
 		color: #CCC;
+	}
+	.date_discriminator .change {
+		font-weight: bold;
+	}
+	.date_discriminator .init {
+		display: none;
 	}
 	
 </style>
@@ -93,42 +99,72 @@ if ($aErrors) {
 			if (typeof nValue == 'undefined') {
 				nValue = 8;
 			}
-			var oInputFullDay, oInputHalfDay;
+			var oInputFullDay, oInputHalfDay, oInputEmptyDay;
 			var sTime = oDate.getTime();
 			var oInputFullDayParams = {
 				'type'	  : 'radio',
-				'id'	  : 'date1_' + sTime,
+				'id'	  : 'date8_' + sTime,
 				'name'	  : sTime,
 				'value'	  : 8
 			};
 			var oInputHalfDayParams = {
 				'type'	: 'radio',
-				'id'	: 'date0_' + sTime,
+				'id'	: 'date4_' + sTime,
 				'name'	: sTime,
 				'value'	: 4
+			};
+			var oInputEmptyDayParams = {
+				'type'	: 'radio',
+				'id'	: 'date0_' + sTime,
+				'name'	: sTime,
+				'value'	: 0
 			};
 			
 			if (nValue == 4) {
 				oInputHalfDayParams['checked'] = 'checked';
-			} else {
+			} else if (nValue == 8) {
 				oInputFullDayParams['checked'] = 'checked';
+			} else {
+				oInputEmptyDayParams['checked'] = 'checked';
 			}
 			
-			var oInputs = $.SPAN({},
-				$.LABEL({'for' : 'date1_' + sTime}, 
+			var oInputs = $.SPAN({'id' : sTime},
+				$.LABEL({'for' : 'date8_' + sTime}, 
 					'Full day (8hrs)'
 				),
 				$.NBSP,
 				oInputFullDay = $.INPUT(oInputFullDayParams),
+				
 				$.NBSP,$.NBSP,$.NBSP,
-				$.LABEL({'for' : 'date0_' + sTime},
+				$.LABEL({'for' : 'date4_' + sTime},
 					'Half day (4hrs)'
 				),
 				$.NBSP,
-				oInputHalfDay = $.INPUT(oInputHalfDayParams)
+				oInputHalfDay = $.INPUT(oInputHalfDayParams),
+				
+				$.NBSP,$.NBSP,$.NBSP,
+				$.LABEL({'for' : 'date0_' + sTime},
+					'Work day (0hrs)'
+				),
+				$.NBSP,
+				oInputEmptyDay = $.INPUT(oInputEmptyDayParams),
+				
+				$.NBSP,$.NBSP,$.NBSP,
+				$.SPAN({'id' : 'init_' + sTime,   'class' : 'init'}, nValue),
+				$.SPAN({'id' : 'change_' + sTime, 'class' : 'change'}, '')
 			);
-			$(oInputFullDay).click(function() {_oThis.update();});
-			$(oInputHalfDay).click(function() {_oThis.update();});
+			$(oInputFullDay).click(function() {
+				_oThis.update();
+				_recalculateChange(this);
+			});
+			$(oInputHalfDay).click(function() {
+				_oThis.update();
+				_recalculateChange(this);
+			});
+			$(oInputEmptyDay).click(function() {
+				_oThis.update();
+				_recalculateChange(this);
+			});
 			return oInputs;	
 		}
 		function _addRow(oDate, bEnabled, nValue) {
@@ -156,6 +192,13 @@ if ($aErrors) {
 			});
 			if (_oOutputHours) { _oOutputHours.html(nHours); }
 			if (_oInputHours && _oInputHours[0])  { _oInputHours[0].value = nHours; }
+		}
+		
+		function _recalculateChange(oTarget) {
+			if (!oTarget || !oTarget.parentNode) { return; }
+			var sTime = oTarget.parentNode.id;
+			var sChange = oTarget.value - $('#init_' + sTime).html();
+			$('#change_' + sTime).html('(Change: ' + sChange + ' hours)');
 		}
 		
 		function _updateHoursDaily() {

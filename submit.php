@@ -173,7 +173,7 @@ foreach ($tokens as $token => $replacement) {
 }
 
 if (ENABLE_DB) {
-  if ($is_editing) {
+  /*if ($is_editing) {
     $query_string =
       "UPDATE pto SET ".
       'person = "'. $notifier_email .'", '.
@@ -185,7 +185,7 @@ if (ENABLE_DB) {
       'WHERE id = '. (string)$id .
       ';'
     ;
-  } else {
+  } else {*/
     $query_string =
       "INSERT INTO pto (person, details, hours, hours_daily, start, end, added) VALUES(".
       '"'. $notifier_email .'", '.
@@ -197,7 +197,7 @@ if (ENABLE_DB) {
       (string)time() .
       ");"
     ;
-  }
+ // }
 //Debug::showAndDie($query_string);
   $query = mysql_query($query_string);
 }

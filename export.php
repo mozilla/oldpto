@@ -23,14 +23,14 @@
 <table id="filters">
     <tr>
 		<td>
-			Start date:
+			Start date range:
 		</td>
 		<td>
 			<input type="text" name="start_date_from" id="start_date_from" class="js-datepicker" autocomplete="off" size="10" /> -
 	        <input type="text" name="start_date_to" id="start_date_to" class="js-datepicker" autocomplete="off" size="10" />
 		</td>
 		<td>
-			Filed date:
+			Filed date range:
 		</td>
 		<td>
 			<input type="text" name="filed_date_from" id="filed_date_from" class="js-datepicker" autocomplete="off" size="10" /> -
@@ -49,7 +49,7 @@
 	</tr>
 	<tr>
 		<td>
-			End date:
+			End date range:
 		</td>
 		<td>
 			<input type="text" name="end_date_from" id="end_date_from" class="js-datepicker" autocomplete="off" size="10" /> -
