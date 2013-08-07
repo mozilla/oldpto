@@ -101,37 +101,53 @@ class Filtering {
 	
 	/************************ PUBLIC *************************/
 	
-	public static function getRecords() {
-		$aMysqlRecords = self::_getMysqlRecords();
-		$aLdapRecords  = self::_getLdapRecords();
-		$aRecords 	   = array();
-		
-		foreach ($aLdapRecords as $sMail=>$aLdapRecord) {
-			$sMail = strtolower($sMail);
-			list($sCity, $sCountry) = explode(':::', $aLdapRecord['physicaldeliveryofficename']);
-			foreach ($aMysqlRecords as $aMysqlRecord) {
-				if ($sMail == strtolower($aMysqlRecord['person'])) {
-					$aRecords[] = array(
-						'id' 		 => $aMysqlRecord['id'],
-						'first_name' => $aLdapRecord['givenname'],
-						'last_name'  => $aLdapRecord['sn'],
-						'email'      => $sMail,
-						'start_date' => $aMysqlRecord['start'],
-						'end_date'   => $aMysqlRecord['end'],
-						'filed_date' => $aMysqlRecord['added'],
-						'pto_hours'  => $aMysqlRecord['hours'],
-						'city'		 => $sCity,
-						'country'	 => $sCountry,
-						'details'	 => $aMysqlRecord['details'],
-						'hours_daily'=> $aMysqlRecord['hours_daily']
-					);
-				}
-			}
-		}
-		
-		return self::_filterRecords($aRecords);
-	}
-	
+    public static function getRecords() {
+        $aMysqlRecords = self::_getMysqlRecords();
+        $aLdapRecords  = self::_getLdapRecords();
+        $aRecords      = array();
+        $sorted_ldap   = array();
+
+        // Loop over all ldap accounts and build associative array
+        // Idea here is most people will have taken PTO at some point
+        // We're potentially adding records to the associative array
+        // unnecessarily, but lookups are much faster
+
+        foreach ($aLdapRecords as $sMail=>$aLdapRecord) {
+            $sMail = strtolower($sMail);
+            list($sCity, $sCountry) = explode(':::', $aLdapRecord['physicaldeliveryofficename']);
+            $sorted_ldap[$sMail] = array(
+                        'first_name' => $aLdapRecord['givenname'],
+                        'last_name' => $aLdapRecord['sn'],
+                        'city' => $sCity,
+                        'country' => $sCountry
+                    );
+        }
+
+        // Loop over all mysql records, merge in the $sorted_ldap data and append to aRecords
+        foreach ($aMysqlRecords as $aMysqlRecord) {
+            $sMail = strtolower($aMysqlRecord['person']);
+            $ldap_contact = $sorted_ldap[$sMail];
+            if ($ldap_contact) {
+                $aRecords[] = array(
+                        'id'         => $aMysqlRecord['id'],
+                        'email'      => $sMail,
+                        'start_date' => $aMysqlRecord['start'],
+                        'end_date'   => $aMysqlRecord['end'],
+                        'filed_date' => $aMysqlRecord['added'],
+                        'pto_hours'  => $aMysqlRecord['hours'],
+                        'details'    => $aMysqlRecord['details'],
+                        'first_name' => $ldap_contact['first_name'],
+                        'last_name' => $ldap_contact['last_name'],
+                        'city' => $ldap_contact['city'],
+                        'country' => $ldap_contact['country'],
+                        'hours_daily'=> $aMysqlRecord['hours_daily']
+                    );
+            }
+        }
+
+        return self::_filterRecords($aRecords);
+    }	
+
 	public static function getCountries() {
 		$aLdapRecords = self::_getLdapRecords();
 		$aCountries = array();
