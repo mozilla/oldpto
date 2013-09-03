@@ -8,6 +8,7 @@ if (isset($_GET["format"]) && $_GET["format"] == "csv") {
   if (!$from_time || !$to_time) {
     die("A time range must be specified.");
   }
+  $results = Filtering::getRecords();
   generate_report($results, $from_time, $to_time);
   die;
 } elseif (!isset($_GET["format"])) {
