@@ -4,6 +4,8 @@ require("prefetch.inc");
 // Try the specified format first
 if (isset($_GET["format"]) && $_GET["format"] == "csv") {
   require("report.inc");
+  $from_time = $_GET['from_time'];
+  $to_time = $_GET['to_time'];
 
   if (!$from_time || !$to_time) {
     die("A time range must be specified.");
