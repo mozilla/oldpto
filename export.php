@@ -1,6 +1,7 @@
 <?php
 
 	require("prefetch.inc");
+    $results = Filtering::getRecords();
     $aLdapCountries = Filtering::getCountries();
 
 	// Try the specified format first
