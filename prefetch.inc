@@ -7,4 +7,3 @@ require_once("auth.php");
 require_once("output.inc");
 require_once("perms.inc");
 require_once('class.Filtering.php');
-$results = Filtering::getRecords();
