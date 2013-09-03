@@ -7,10 +7,10 @@
 
 	if (function_exists($output_function)){
         $results = Filtering::getRecords();
-        $aLdapCountries = Filtering::getCountries();
 		call_user_func($output_function, $results, $from_time, $to_time);
 	} elseif (!isset($_GET["format"])) {
 		// Don't do anything. Fall through to exporting as pretty HTML.
+        $aLdapCountries = Filtering::getCountries();
 	} else {
 		// Format not supported
 		header("HTTP/1.1 400 Bad Request");
