@@ -77,15 +77,11 @@ function output_csv($data, $from, $to, $send_headers=TRUE) {
 	}
 	$aFields = array(
 		'Id',
-		'First Name',
-		'Last Name',
 		'Email',
 		'Start Date',
 		'End Date',
 		'Filed Date',
 		'PTO Hours',
-		'City',
-		'Country',
 		'Details'
 	);
 	$sFields = '';
