@@ -12,6 +12,8 @@ Installation
 * import schema.sql into your own database
 * fill in the blanks in config.php
 
+Note: The app requires LDAP server access. You probably need a VPN connection up and running.
+
 LDAP Assumptions
 ----------------
 
