@@ -1,3 +1,8 @@
+Old PTO
+=======
+Mozilla's old PTO app. Though I prefer the term "vintage".
+
+
 Libraries Used
 --------------
 
@@ -20,3 +25,12 @@ LDAP Assumptions
 * `manager` field contains a dn pointing to manager's record
 * everyone has a `manager` (not true for mitchell and lilly)
 * /^.*@mozilla.*$/ can match everyone's email address
+
+Contributing
+------------
+
+If you feel so inclined, feel free to contribute:
+
+* Bugs in Bugzilla: [Webtools :: PTO](https://bugzilla.mozilla.org/buglist.cgi?component=PTO&product=Webtools&resolution=---)
+* Code via github pull request
+* Empathy via any appropriate medium.
