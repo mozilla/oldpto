@@ -21,8 +21,12 @@
     <nav>
       <ul id="menu">
         <li><a href="./">Notify</a></li>
-        <li><a href="./export.php">List</a></li>
-        <li><a href="./report.php">Report</a></li>
+        <?php
+          if (in_array($_SERVER["PHP_AUTH_USER"], $export_users)) {
+            ?><li><a href="./export.php">List</a></li>
+       	    <li><a href="./report.php">Report</a></li><?php
+	  }
+        ?>
       </ul>
     </nav>
   </header>

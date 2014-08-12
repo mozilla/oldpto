@@ -29,12 +29,18 @@ class Filtering {
 	private static function _buildMysqlQuery() {
 		$aConditions = array();
 		$aFields = implode(', ', self::$aMysqlFields);
+		$start_date_from = isset($_REQUEST['start_date_from']) ? $_REQUEST['start_date_from'] : NULL;
+		$start_date_to = isset($_REQUEST['start_date_to']) ? $_REQUEST['start_date_to'] : NULL;
+		$end_date_from = isset($_REQUEST['end_date_from']) ? $_REQUEST['end_date_from'] : NULL;
+		$end_date_to = isset($_REQUEST['end_date_to']) ? $_REQUEST['end_date_to'] : NULL;
+		$filed_date_from = isset($_REQUEST['filed_date_from']) ? $_REQUEST['filed_date_from'] : NULL;
+		$filed_date_to = isset($_REQUEST['filed_date_to']) ? $_REQUEST['filed_date_to'] : NULL;
 
-		$sStart = self::_buildMysqlDateRangeClause('start', $_REQUEST['start_date_from'], $_REQUEST['start_date_to']);
+		$sStart = self::_buildMysqlDateRangeClause('start', $start_date_from, $start_date_to);
 		if ($sStart) { $aConditions[] = $sStart; }
-		$sEnd   = self::_buildMysqlDateRangeClause('end',   $_REQUEST['end_date_from'],   $_REQUEST['end_date_to']);
+		$sEnd   = self::_buildMysqlDateRangeClause('end',   $end_date_from,   $end_date_to);
 		if ($sEnd) { $aConditions[] = $sEnd; }
-		$sFiled = self::_buildMysqlDateRangeClause('added', $_REQUEST['filed_date_from'], $_REQUEST['filed_date_to']);
+		$sFiled = self::_buildMysqlDateRangeClause('added', $filed_date_from, $filed_date_to);
 		if ($sFiled) { $aConditions[] = $sFiled; }
 
 		$sConditions = implode(' AND ', $aConditions);
@@ -62,7 +68,9 @@ class Filtering {
 			$sMail = $aRow['mail'][0];
 			$aRecords[$sMail] = array();
 			foreach (self::$aLdapFields as $sFieldName) {
-				$aRecords[$sMail][$sFieldName] = $aRow[$sFieldName][0];
+				if (isset($aRow[$sFieldName][0])) {
+					$aRecords[$sMail][$sFieldName] = $aRow[$sFieldName][0];
+				}
 			}
 		}
 		self::$_aLdapRecords = $aRecords;
@@ -85,9 +93,9 @@ class Filtering {
 		return $aRecordSet;
 	}
 	private static function _filterRecords($aRecords) {
-		$sCountry   = strtolower(trim($_REQUEST['country']));
-		$sFirstName = strtolower(trim($_REQUEST['first_name']));
-		$sLastName  = strtolower(trim($_REQUEST['last_name']));
+		$sCountry   = isset($_REQUEST['country']) ? strtolower(trim($_REQUEST['country'])) : NULL;
+		$sFirstName = isset($_REQUEST['first_name']) ? strtolower(trim($_REQUEST['first_name'])) : NULL;
+		$sLastName  = isset($_REQUEST['last_name']) ?strtolower(trim($_REQUEST['last_name'])) : NULL;
 		
 		$aFilteredRecords = array();
 		foreach ($aRecords as $aRecord) {
@@ -114,7 +122,12 @@ class Filtering {
 
         foreach ($aLdapRecords as $sMail=>$aLdapRecord) {
             $sMail = strtolower($sMail);
-            list($sCity, $sCountry) = explode(':::', $aLdapRecord['physicaldeliveryofficename']);
+            if (isset($aLdapRecord['physicaldeliveryofficename'])) {
+            	list($sCity, $sCountry) = explode(':::', $aLdapRecord['physicaldeliveryofficename']);
+	    } else {
+		$sCity = NULL;
+		$sCountry = NULL;
+	    }
             $sorted_ldap[$sMail] = array(
                         'first_name' => $aLdapRecord['givenname'],
                         'last_name' => $aLdapRecord['sn'],
@@ -152,9 +165,11 @@ class Filtering {
 		$aLdapRecords = self::_getLdapRecords();
 		$aCountries = array();
 		foreach ($aLdapRecords as $aRecord) {
-			list($sCity, $sCountry) = explode(':::', $aRecord['physicaldeliveryofficename']);
-			if (!trim($sCountry)) { continue; }
-			$aCountries[$sCountry] = $sCountry;
+			if (isset($aRecord['physicaldeliveryofficename'])) {
+				list($sCity, $sCountry) = explode(':::', $aRecord['physicaldeliveryofficename']);
+				if (!trim($sCountry)) { continue; }
+				$aCountries[$sCountry] = $sCountry;
+			}
 		}
 		return $aCountries;
 	}

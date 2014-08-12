@@ -27,6 +27,12 @@ $hr_managers = array(
   "karen@mozilla.com"
 );
 
+# Only these people are able to view the export and report pages
+$export_users = array(
+  "dcoleman@mozilla.com",
+  "jaguilera@mozilla.com"
+);
+
 # Specified in RFC address format. One address per array element, please.
 $notified_people = array(
   "Karen Prescott <karen@mozilla.com>"

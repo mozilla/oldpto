@@ -2,15 +2,26 @@
 
 	require("prefetch.inc");
 
-	// Try the specified format first
-	$output_function = "output_". $_GET["format"];
+	if (!in_array($_SERVER["PHP_AUTH_USER"], $export_users)) {
+		include "./templates/header.php";
+		echo "You are not permitted to view this page.";
+		include "./templates/footer.php";
+		exit;
+        }
 
-	if (function_exists($output_function)){
-        $results = Filtering::getRecords();
-		call_user_func($output_function, $results, $from_time, $to_time);
+	// Try the specified format first
+        if (isset($_GET["format"])) {
+		$output_function = "output_". $_GET["format"];
+	}
+	if (isset($output_function) && function_exists($output_function)){
+        	$results = Filtering::getRecords();
+		call_user_func($output_function,
+				$results,
+				isset($from_time) ? $from_time : NULL,
+				isset($to_time) ? $to_time : NULL);
 	} elseif (!isset($_GET["format"])) {
 		// Don't do anything. Fall through to exporting as pretty HTML.
-        $aLdapCountries = Filtering::getCountries();
+        	$aLdapCountries = Filtering::getCountries();
 	} else {
 		// Format not supported
 		header("HTTP/1.1 400 Bad Request");
@@ -18,7 +29,6 @@
 	}
 
 	require_once "./templates/header.php";
-	
 ?>
 
 <form id="filter_form" onsubmit="applyFilter();return false;">
