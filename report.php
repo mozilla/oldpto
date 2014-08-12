@@ -1,6 +1,13 @@
 <?php
 require("prefetch.inc");
 
+if (!in_array($_SERVER["PHP_AUTH_USER"], $export_users)) {
+        include "./templates/header.php";
+        echo "You are not permitted to view this page.";
+        include "./templates/footer.php";
+        exit;
+}
+
 // Try the specified format first
 if (isset($_GET["format"]) && $_GET["format"] == "csv") {
   require("report.inc");
@@ -22,6 +29,7 @@ if (isset($_GET["format"]) && $_GET["format"] == "csv") {
 }
 
 require_once "./templates/header.php";
+
 ?>
   <p>
     A report, only available in CSV format, is a more macro overview of PTOs 

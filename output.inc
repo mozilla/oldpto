@@ -2,9 +2,6 @@
 
 function output_json($data, $from, $to, $send_headers=TRUE) {
 	$correct_mime = TRUE;
-	if (strpos($_SERVER["HTTP_ACCEPT"], "application/json") !== FALSE || $_GET["valid_mime"] == '1') {
-		$correct_mime = TRUE;
-	}
 	if ($send_headers) {
 		header("Content-Type: ". ($correct_mime ? "application/json" : "application/javascript"));
 	}

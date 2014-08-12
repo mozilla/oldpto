@@ -7,6 +7,11 @@ require_once("class.Debug.php");
 require_once("./templates/header.php");
 
 /****************************************/
+
+$aFormValues = NULL;
+$aErrors = NULL;
+$is_editing = false;
+
 $data = ldap_find(
   	$connection,
 	"mail=". $_SERVER["PHP_AUTH_USER"],
