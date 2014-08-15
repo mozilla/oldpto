@@ -3,6 +3,13 @@
 /********************************************/
 // Validate step 1 variables
 $aErrors = array();
+
+// Input data whitelist
+$step1_vars = array('id', 'start', 'end', 'people', 'cc', 'details', 'hours', 'hours_daily');
+$s1data = array_fill_keys($step1_vars, '');  // Default to '' for all input data
+// Fill only expected fields with request data.
+$s1data = array_merge($s1data, array_intersect_key($_REQUEST, $s1data));
+
 if (!$_REQUEST['start']) {
 	$aErrors[] = 'Start date is missing';
 }
@@ -18,16 +25,11 @@ if ($aErrors) {
 ?>
 
 <form action="submit.php" method="post">
-	
-	<input type="hidden" name="id" 			value="<?= $_REQUEST['id'] ?>" 			/>
-	<input type="hidden" name="start" 		value="<?= $_REQUEST['start'] ?>" 		/>
-	<input type="hidden" name="end" 		value="<?= $_REQUEST['end'] ?>" 		/>
-	<input type="hidden" name="people" 		value="<?= $_REQUEST['people'] ?>" 		/>
-	<input type="hidden" name="cc" 			value="<?= $_REQUEST['cc'] ?>" 			/>
-	<input type="hidden" name="details" 	value="<?= $_REQUEST['details'] ?>" 	/>
-	<input type="hidden" name="hours" 		value="<?= $_REQUEST['hours'] ?>" 		id="hours" 		 />
-	<input type="hidden" name="hours_daily" value="<?= $_REQUEST['hours_daily'] ?>" id="hours_daily" />
-	
+
+	<?php foreach ($s1data as $s1var => $s1value): ?>
+		<input type="hidden" name="<?= $s1var ?>" value="<?= htmlspecialchars($s1value) ?>" id="<?= $s1var ?>" />
+	<?php endforeach; ?>
+
 	<div id="screen2">
 		<p>Please specify amount of PTO hours for each day:</p>
 		<div id="date_discriminator_panel">
@@ -246,13 +248,12 @@ if ($aErrors) {
 		$ = jQuery;
 		var oDiscriminator = new DateDiscriminator({
 			id				  : 'date_discriminator',
-			start_date 		  : '<?= $_REQUEST['start'] ?>',
-			end_date 		  : '<?= $_REQUEST['end'] ?>',
-			output_hours	  : '#date_discriminator_hours', 
-			input_hours		  : '#hours', 
+			start_date 		  : JSON.parse('<?= json_encode($s1data['start']) ?>'),
+			end_date 		  : JSON.parse('<?= json_encode($s1data['end']) ?>'),
+			output_hours	  : '#date_discriminator_hours',
+			input_hours		  : '#hours',
 			input_hours_daily : '#hours_daily'
 		});
 	});
 </script>
 
-	
