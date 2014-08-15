@@ -15,7 +15,7 @@ Installation
 
 * copy config-dist.php to config.php
 * import schema.sql into your own database
-* fill in the blanks in config.php
+* copy config-dist.php to config.php and fill in the blanks
 
 Note: The app requires LDAP server access. You probably need a VPN connection up and running.
 
@@ -23,7 +23,7 @@ LDAP Assumptions
 ----------------
 
 * `manager` field contains a dn pointing to manager's record
-* everyone has a `manager` (not true for mitchell and lilly)
+* everyone has a `manager`, with the exception of known tree roots such as the CEO
 * /^.*@mozilla.*$/ can match everyone's email address
 
 Contributing
