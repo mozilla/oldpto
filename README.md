@@ -22,9 +22,9 @@ Note: The app requires LDAP server access. You probably need a VPN connection up
 LDAP Assumptions
 ----------------
 
-* `manager` field contains a dn pointing to manager's record
+* ``manager`` field contains a dn pointing to manager's record
 * everyone has a `manager`, with the exception of known tree roots such as the CEO
-* /^.*@mozilla.*$/ can match everyone's email address
+* ``/^.*@mozilla.*$/`` can match everyone's email address
 
 Contributing
 ------------
