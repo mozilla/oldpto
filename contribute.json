@@ -1,0 +1,27 @@
+{
+    "name": "Old PTO",
+    "description": "Mozilla's vintage PTO reporting app.",
+    "repository": {
+        "url": "https://github.com/mozilla/oldpto",
+        "license": "MPL2",
+        "type": "git"
+    },
+
+    "participate": {
+        "home": "https://github.com/mozilla/oldpto",
+        "docs": "https://github.com/mozilla/oldpto#readme",
+        "irc": "irc://irc.mozilla.org/#webdev",
+        "irc-contacts": [
+            "laura",
+            "wenzel"
+        ]
+    },
+    "bugs": {
+        "list": "https://bugzilla.mozilla.org/buglist.cgi?resolution=---&component=PTO&product=Webtools",
+        "report": "https://bugzilla.mozilla.org/enter_bug.cgi?product=Webtools&component=PTO",
+        "mentored": "https://bugzilla.mozilla.org/buglist.cgi?resolution=---&component=PTO&product=Webtools&f1=bug_mentor&o1=isnotempty"
+    },
+    "urls": {
+        "prod": "https://intranet.mozilla.org/pto/"
+    }
+}
