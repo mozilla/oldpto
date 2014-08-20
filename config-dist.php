@@ -23,25 +23,22 @@ define("DEBUG_ON", FALSE);
 
 # Specify HR managers with email addresses only.
 $hr_managers = array(
-  "dportillo@mozilla.com",
-  "karen@mozilla.com"
+  //"hrmanager@example.com",
 );
 
 # Only these people are able to view the export and report pages
 $export_users = array(
-  "dcoleman@mozilla.com",
-  "jaguilera@mozilla.com"
+  //"payrollperson@example.com",
 );
 
 # Specified in RFC address format. One address per array element, please.
 $notified_people = array(
-  "Karen Prescott <karen@mozilla.com>"
+  //"John Doe <johndoe@example.com>"
 );
 
 # Specify addesses that aren't allowed in the additional notified people field.
 $mail_blacklist = array(
-  "all@mozilla.com",
-  "all-mv@mozilla.com"
+  //"entirecompany@example.com",
 );
 
 # Set to "submitter" to mail on behalf of the person submitting the notification
