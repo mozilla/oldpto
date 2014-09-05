@@ -32,6 +32,11 @@ h1 {
   overflow: hidden;
   }
 
+h2 {
+  font: 18px "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  font-weight: bold;
+  }
+
 a {
   color: #acd1e3;
   }
@@ -236,3 +241,38 @@ tr td:first-child label {
     text-align: center;
     }
 
+.pto_table_container {
+    background-color: #fafcfc;
+    padding: 3px 10px 12px 10px !important;
+}
+
+#mypto_table {
+    margin: 3px 0 5px 0;
+    background-color: #FFF;
+    border: 1px solid #DDD;
+    width: 100%;
+}
+
+#mypto_table thead {
+    background: #fcfcfe url(../img/datatables_header_bg.jpg) bottom repeat-x;
+}
+
+#mypto_table tr th {
+    text-align: left;
+    white-space: nowrap;
+    font-weight: bold;
+    border-bottom: 1px solid #FFF;
+    border-right: 1px solid #FFF;
+}
+
+#mypto_table tr td {
+    border-right: 1px solid #FFF;
+}
+
+#mypto_table th.datetime {
+    width: 140px;
+}
+
+#mypto_table th.hours {
+    width: 50px;
+}
