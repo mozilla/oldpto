@@ -1,6 +1,7 @@
 <?php
 
 require_once('config.php');
+require_once('auth.php');
 
 $me = $_SERVER['PHP_AUTH_USER'];
 
@@ -25,7 +26,7 @@ try {
     $stmt->execute();
 
     $result = $stmt->get_result();
-
+    $mypto = array();
     while ($row = $result->fetch_assoc()) {
 	$row['added'] = date('D, d M Y', $row['added']);
 	$row['start'] = date('D, d M Y', $row['start']);
@@ -34,9 +35,9 @@ try {
     }
 
 } catch (mysqli_sql_exception $e) {
-    include "./templates/header.php";
+    include './templates/header.php';
     echo 'There was a problem getting your PTO records. Please try again later.';
-    include "./templates/footer.php";
+    include './templates/footer.php';
     exit;
 }
 
@@ -50,17 +51,17 @@ foreach ($mypto as $row) {
 }
 
 
-include "./templates/header.php";
+include './templates/header.php';
 ?>
 <div class='pto_table_container'>
 <h2>My Reported PTO</h2>
     <table id='mypto_table' class='display'>
         <thead>
             <tr>
-                <th width='140px'>Added</th>
-                <th width='50px'>Hours</th>
-                <th width='140px'>Start</th>
-                <th width='140px'>End</th>
+                <th class='datetime'>Added</th>
+                <th class='hours'>Hours</th>
+                <th class='datetime'>Start</th>
+                <th class='datetime'>End</th>
                 <th>Details</th>
             </tr>
         </thead>
@@ -70,34 +71,5 @@ include "./templates/header.php";
     </table>
 </div>
 
-<style>
-.pto_table_container {
-    background-color: #fafcfc;
-    padding: 3px 10px 12px 10px !important;
-}
-
-#mypto_table {
-    margin: 3px 0 5px 0;
-    background-color: #FFF;
-    border: 1px solid #DDD;
-    width: 100% !important;
-}
-
-#mypto_table thead {
-    background: #fcfcfe url(img/datatables_header_bg.jpg) bottom repeat-x;
-}
-
-#mypto_table tr th {
-    text-align: left;
-    white-space: nowrap;
-    font-weight: bold;
-    border-bottom: 1px solid #FFF;
-    border-right: 1px solid #FFF;
-}
-
-#mypto_table tr td {
-    border-right: 1px solid #FFF;
-}
-</style>
 <?php
-include "./templates/footer.php";
+include './templates/footer.php';
