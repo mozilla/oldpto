@@ -21,6 +21,7 @@
     <nav>
       <ul id="menu">
         <li><a href="./">Notify</a></li>
+        <li><a href="./mypto.php">My PTO</a></li>
         <?php
           if (in_array($_SERVER["PHP_AUTH_USER"], $export_users)) {
             ?><li><a href="./export.php">List</a></li>

@@ -32,6 +32,11 @@ h1 {
   overflow: hidden;
   }
 
+h2 {
+  font: 18px "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  font-weight: bold;
+  }
+
 a {
   color: #acd1e3;
   }
