@@ -15,7 +15,7 @@ $me = $_SERVER['PHP_AUTH_USER'];
 $conn =  @mysql_connect($mysql['host'], $mysql['user'], $mysql['password']) 
              or pretty_die();
 
-@mysql_select_db($mysql['database']) or pretty_die();
+@mysql_select_db($mysql['database'], $conn) or pretty_die();
 
 $query = "select
               added,
@@ -24,10 +24,10 @@ $query = "select
               end,
               details
           from pto
-          where person = '".mysql_real_escape_string($me)."'
+          where person = '".mysql_real_escape_string($me, $conn)."'
           order by start desc";
 
-$result = @mysql_query($query) or pretty_die();
+$result = @mysql_query($query, $conn) or pretty_die();
 
 $mypto = array();
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
