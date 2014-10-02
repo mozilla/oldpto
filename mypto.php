@@ -3,43 +3,42 @@
 require_once('config.php');
 require_once('auth.php');
 
-$me = $_SERVER['PHP_AUTH_USER'];
-
-/* Turn on exceptions instead of errors for mysqli */
-$driver = new mysqli_driver();
-$driver->report_mode = MYSQLI_REPORT_STRICT;
-
-try {
-    $conn =  new mysqli($mysql['host'], $mysql['user'], $mysql['password'], $mysql['database']);
-
-    $stmt = $conn->prepare('select
-                                added,
-                                hours,
-                                start,
-                                end,
-                                details
-                            from pto
-                            where person = ?
-                            order by start desc
-                           ');
-    $stmt->bind_param("s", $me);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    $mypto = array();
-    while ($row = $result->fetch_assoc()) {
-	$row['added'] = date('D, d M Y', $row['added']);
-	$row['start'] = date('D, d M Y', $row['start']);
-	$row['end'] = date('D, d M Y', $row['end']);
-	$mypto[] = $row;
-    }
-
-} catch (mysqli_sql_exception $e) {
+function pretty_die() {
     include './templates/header.php';
     echo 'There was a problem getting your PTO records. Please try again later.';
     include './templates/footer.php';
     exit;
 }
+
+$me = $_SERVER['PHP_AUTH_USER'];
+
+$conn =  @mysql_connect($mysql['host'], $mysql['user'], $mysql['password']) 
+             or pretty_die();
+
+@mysql_select_db($mysql['database']) or pretty_die();
+
+$query = "select
+              added,
+              hours,
+              start,
+              end,
+              details
+          from pto
+          where person = '".mysql_real_escape_string($me)."'
+          order by start desc";
+
+$result = @mysql_query($query) or pretty_die();
+
+$mypto = array();
+while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $row['added'] = date('D, d M Y', $row['added']);
+    $row['start'] = date('D, d M Y', $row['start']);
+    $row['end'] = date('D, d M Y', $row['end']);
+    $mypto[] = $row;
+}
+
+mysql_free_result($result);
+mysql_close($conn);
 
 $mypto_table_contents = '';
 foreach ($mypto as $row) {
@@ -49,7 +48,6 @@ foreach ($mypto as $row) {
     }
     $mypto_table_contents .= '</tr>';
 }
-
 
 include './templates/header.php';
 ?>
