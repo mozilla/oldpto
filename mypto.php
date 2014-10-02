@@ -40,9 +40,18 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 mysql_free_result($result);
 mysql_close($conn);
 
+$i=0;
 $mypto_table_contents = '';
 foreach ($mypto as $row) {
-    $mypto_table_contents .= '<tr>';
+    // adding some row colours
+    $i++;
+    if ($i%2==0) {
+        $mypto_table_contents .= '<tr bgcolor="#EFEFEF">';
+    }
+    else {
+        $mypto_table_contents .= '<tr>';
+    }
+
     foreach($row as $value) {
         $mypto_table_contents .= '<td>'.$value.'</td>';
     }
@@ -56,11 +65,11 @@ include './templates/header.php';
     <table id='mypto_table' class='display'>
         <thead>
             <tr>
-                <th class='datetime'>Added</th>
-                <th class='hours'>Hours</th>
-                <th class='datetime'>Start</th>
-                <th class='datetime'>End</th>
-                <th>Details</th>
+                <th class='datetime'>&nbsp;Added</th>
+                <th class='hours'>&nbsp;Hours</th>
+                <th class='datetime'>&nbsp;Start</th>
+                <th class='datetime'>&nbsp;End</th>
+                <th>&nbsp;Details</th>
             </tr>
         </thead>
         <tbody>
