@@ -69,7 +69,7 @@ include './templates/header.php';
                 <th class='hours'>Hours</th>
                 <th class='datetime'>Start</th>
                 <th class='datetime'>End</th>
-                <th>&nbsp;Details</th>
+                <th>Details</th>
             </tr>
         </thead>
         <tbody>
