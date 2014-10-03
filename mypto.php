@@ -65,10 +65,10 @@ include './templates/header.php';
     <table id='mypto_table' class='display'>
         <thead>
             <tr>
-                <th class='datetime'>&nbsp;Added</th>
-                <th class='hours'>&nbsp;Hours</th>
-                <th class='datetime'>&nbsp;Start</th>
-                <th class='datetime'>&nbsp;End</th>
+                <th class='datetime'>Added</th>
+                <th class='hours'>Hours</th>
+                <th class='datetime'>Start</th>
+                <th class='datetime'>End</th>
                 <th>&nbsp;Details</th>
             </tr>
         </thead>
