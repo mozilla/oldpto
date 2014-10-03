@@ -259,6 +259,7 @@ tr td:first-child label {
 
 #mypto_table tr th {
     text-align: left;
+    text-indent: 0.3em;
     white-space: nowrap;
     font-weight: bold;
     border-bottom: 1px solid #FFF;
@@ -275,4 +276,8 @@ tr td:first-child label {
 
 #mypto_table th.hours {
     width: 50px;
+}
+
+#mypto_table tr.highlight {
+    background-color: #EFEFEF;
 }

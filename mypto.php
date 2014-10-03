@@ -40,13 +40,13 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 mysql_free_result($result);
 mysql_close($conn);
 
-$i=0;
+$i = 0;
 $mypto_table_contents = '';
 foreach ($mypto as $row) {
     // adding some row colours
     $i++;
-    if ($i%2==0) {
-        $mypto_table_contents .= '<tr bgcolor="#EFEFEF">';
+    if ($i%2 == 0) {
+        $mypto_table_contents .= '<tr class="highlight">';
     }
     else {
         $mypto_table_contents .= '<tr>';
