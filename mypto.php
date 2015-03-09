@@ -73,7 +73,7 @@ include './templates/header.php';
             </tr>
         </thead>
         <tbody>
-	<?=$mypto_table_contents; ?>
+	<?php echo $mypto_table_contents; ?>
         </tbody>
     </table>
 </div>

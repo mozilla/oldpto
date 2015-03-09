@@ -27,7 +27,7 @@ if ($aErrors) {
 <form action="submit.php" method="post">
 
 	<?php foreach ($s1data as $s1var => $s1value): ?>
-		<input type="hidden" name="<?= $s1var ?>" value="<?= htmlspecialchars($s1value) ?>" id="<?= $s1var ?>" />
+		<input type="hidden" name="<?php echo $s1var ?>" value="<?php echo htmlspecialchars($s1value) ?>" id="<?php echo $s1var ?>" />
 	<?php endforeach; ?>
 
 	<div id="screen2">
@@ -261,8 +261,8 @@ if ($aErrors) {
 		$ = jQuery;
 		var oDiscriminator = new DateDiscriminator({
 			id				  : 'date_discriminator',
-			start_date 		  : JSON.parse('<?= json_encode($s1data['start']) ?>'),
-			end_date 		  : JSON.parse('<?= json_encode($s1data['end']) ?>'),
+			start_date 		  : JSON.parse('<?php echo json_encode($s1data['start']) ?>'),
+			end_date 		  : JSON.parse('<?php echo json_encode($s1data['end']) ?>'),
 			output_hours	  : '#date_discriminator_hours',
 			input_hours		  : '#hours',
 			input_hours_daily : '#hours_daily'

@@ -1,9 +1,9 @@
 <form method="post">
-	<input type="hidden" name="id" value="<?= $aFormValues['id'] ?>" />
-	<input type="hidden" name="hours_daily" value="<?= urlencode($aFormValues['hours_daily']) ?>" />
+	<input type="hidden" name="id" value="<?php echo $aFormValues['id'] ?>" />
+	<input type="hidden" name="hours_daily" value="<?php echo urlencode($aFormValues['hours_daily']) ?>" />
 	
-    <p>Hello, <?= email_to_alias($notifier_email) ?>. 
-    <?= $is_editing ? 'Edit' : 'Submit' ?> your PTO notification here. 
+    <p>Hello, <?php echo email_to_alias($notifier_email) ?>. 
+    <?php echo $is_editing ? 'Edit' : 'Submit' ?> your PTO notification here. 
     (<a href="https://intranet.mozilla.org/Paid_Time_Off_%28PTO%29">Learn about PTO</a>)</p>
 
 	<?php
@@ -22,21 +22,21 @@
 		    <tr>
 		      <td><label for="start">Start</label></td>
 		      <td>
-		        <input type="text" id="start" name="start" size="10" autocomplete="off" value="<?= $aFormValues['start'] ?>" />
+		        <input type="text" id="start" name="start" size="10" autocomplete="off" value="<?php echo $aFormValues['start'] ?>" />
 		      </td>
 		    </tr>
 		    <tr>
 		      <td><label for="end">End</label></td>
 		      <td>
-		        <input type="text" id="end" name="end" size="10" autocomplete="off" value="<?= $aFormValues['end'] ?>" />
+		        <input type="text" id="end" name="end" size="10" autocomplete="off" value="<?php echo $aFormValues['end'] ?>" />
 		      </td>
 		    </tr>
 		    <tr>
 		<?php $for_this_edit = $is_editing ? "<br />(for this edit)" : ''; ?>
-		      <td><label for="people">People to Notify</label><?= $for_this_edit ?></td>
+		      <td><label for="people">People to Notify</label><?php echo $for_this_edit ?></td>
 		      <td>
-		        <?= htmlentities(implode(", ", $notified_people)) ?><br />
-		        <textarea name="people" cols="80" rows="2"><?= $aFormValues['people'] ?></textarea><br />
+		        <?php echo htmlentities(implode(", ", $notified_people)) ?><br />
+		        <textarea name="people" cols="80" rows="2"><?php echo $aFormValues['people'] ?></textarea><br />
 		        <input type="checkbox" name="cc" id="cc" value="1" />
 		        <label for="cc">CC me</label>
 		      </td>
@@ -44,7 +44,7 @@
 		    <tr>
 		      <td><label for="details">Details</label><br />(optional)</td>
 		      <td>
-		        <textarea name="details" cols="80" rows="10"><?= $aFormValues['details'] ?></textarea>
+		        <textarea name="details" cols="80" rows="10"><?php echo $aFormValues['details'] ?></textarea>
 		      </td>
 		    </tr>
     	</tbody>
