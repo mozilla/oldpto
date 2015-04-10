@@ -167,6 +167,9 @@ if ($is_editing) {
   $subject = $edit_subject;
   $body = $single_day_fix ? $edit_single_day_body : $edit_body;
 }
+
+$subject += $single_day_fix ? " (%start%)" : " (%start% - %end%)";
+
 foreach ($tokens as $token => $replacement) {
   $subject = str_replace($token, $replacement, $subject);
   $body = str_replace($token, $replacement, $body);

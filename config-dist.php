@@ -46,8 +46,8 @@ $from = "submitter";
 
 # The following template variables are available:
 # %id%, %notifier%, %editor%, %hours%, %start%, %end%, %details%
-$subject = "PTO notification from %notifier%";
-$edit_subject = "Edit of PTO by %editor%";
+$subject = "PTO: %notifier%";
+$edit_subject = "PTO Edit: %editor%";
 $body = <<<EOD
 %notifier% has submitted %hours% hours of PTO from %start% to %end% with the details:
 %details%
