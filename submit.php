@@ -227,13 +227,13 @@ require_once "./templates/header.php";
     <p>
     <?php
       if ($query && $mail_result) {
-        print "Great success! The PTO notification was mailed to peoples and put into database. It's nice!";
+        print "Your PTO has been put into the database, and the email has been sent :)";
       } elseif ($query && !$mail_result) {
-        print "OH NOES! I CAN'T SENDZ OUT MAILZ.";
+        print "Your PTO has been put into the database. Unfortunately, the email was NOT sent due to an error.";
       } elseif (!$query && $mail_result) {
-        print "I SENTZ MAIL BUT SQL FAIL :(";
+        print "Your PTO was NOT put into the database, due to an error, EVEN THOUGH an email was sent. Please resubmit your PTO :(";
       } else /* if (!$query && !$mail_result) */ {
-        print "<em>Someone set up us DB and mail fail! We get signal.</em> How are you, gentlemen!! All your PTO are belong to us. You have no chance to vacation make your time. <em>Mail kourge@mozilla.com. For great justice.</em>";
+        print "Your PTO was NOT put into the database, nor was an email sent. Please resubmit your PTO :(";
       }
 
       if (!$query && DEBUG_ON) {
