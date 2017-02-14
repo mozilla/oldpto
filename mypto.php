@@ -4,13 +4,14 @@ require_once('config.php');
 require_once('auth.php');
 
 function pretty_die() {
+    global $GLOBAL_AUTH_USERNAME;
     include './templates/header.php';
     echo 'There was a problem getting your PTO records. Please try again later.';
     include './templates/footer.php';
     exit;
 }
 
-$me = $_SERVER['PHP_AUTH_USER'];
+$me = $GLOBAL_AUTH_USERNAME;
 
 $conn =  @mysql_connect($mysql['host'], $mysql['user'], $mysql['password']) 
              or pretty_die();

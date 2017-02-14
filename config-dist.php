@@ -13,6 +13,13 @@ $mysql = array(
   "database" => ""
 );
 
+$LDAP_BIND_USER = 'id=username@domain.com,ou=logins,dc=foo';
+$LDAP_BIND_PASS = 'LDAPBINDPASS';
+
+// No longer rely on PHP_AUTH_USER blindly
+// $_SERVER['OIDC_CLAIM_email'] would work for Open ID Connect
+$GLOBAL_AUTH_USERNAME = $_SERVER['PHP_AUTH_USER'];
+
 # Set the constants below to FALSE to do various debugging.
 define("ENABLE_MAIL", TRUE);
 define("ENABLE_DB", TRUE);

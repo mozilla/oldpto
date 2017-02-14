@@ -23,7 +23,7 @@
         <li><a href="./">Notify</a></li>
         <li><a href="./mypto.php">My PTO</a></li>
         <?php
-          if (in_array($_SERVER["PHP_AUTH_USER"], $export_users)) {
+          if (in_array($GLOBAL_AUTH_USERNAME, $export_users)) {
             ?><li><a href="./export.php">List</a></li>
        	    <li><a href="./report.php">Report</a></li><?php
 	  }

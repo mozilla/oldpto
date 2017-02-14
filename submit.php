@@ -50,7 +50,7 @@ if (isset($_REQUEST["id"]) && $_REQUEST["id"]) {
 }
 
 
-$notifier_email = $_SERVER["PHP_AUTH_USER"];
+$notifier_email = $GLOBAL_AUTH_USERNAME;
 $data = ldap_find(
   $connection, "mail=". $notifier_email, array("manager", "cn")
 );
