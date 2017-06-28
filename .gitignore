@@ -1,2 +1,16 @@
+# Do not track secrets
 config\.php
 \.DS_Store
+nubis/cloudformation/parameters*
+!nubis/cloudformation/parameters.json-dist
+nubis/librarian-puppet.tar.gz
+nubis/librarian-puppet
+nubis/Puppetfile.lock
+nubis/.tmp
+nubis/.librarian
+nubis/builder/artifacts/*-dev*
+nubis/terraform/terraform.tfstate*
+nubis/terraform/.terraform
+nubis/terraform/terraform.tfvars
+nubis/builder/artifacts/*-dev/
+nubis/builder/artifacts/AMIs.json
