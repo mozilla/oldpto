@@ -1,9 +1,25 @@
 {
-"provisioners": [
-  {
-    "type": "shell",
-    "inline": ["true"],
-    "order": "11"
-  }
-]
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo mkdir -p -m 755 /var/www/pto",
+        "sudo chown ubuntu:ubuntu /var/www/pto"
+      ],
+      "order": "1"
+    },
+    {
+      "type": "file",
+      "source": "./",
+      "destination": "/var/www/pto",
+      "order": "2"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo chown -R root:root /var/www/pto"
+      ],
+      "order": "3"
+    }
+  ]
 }
