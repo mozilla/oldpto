@@ -57,3 +57,7 @@ include nubis_configuration
 nubis::configuration{ $project_name:
   format  => 'php',
 }
+
+package { 'php5-ldap': 
+	ensure => 'latest',
+}
