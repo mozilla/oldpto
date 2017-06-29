@@ -1,9 +1,14 @@
 <?php
+require_once "/etc/nubis-config/pto.php";
+
 $ldap = array(
-  "host" => "",
-  "port" => 389
+ "host" => "$ldap_host",
+ "port" => $ldap_port,
 );
 $connection = null;
+
+$LDAP_BIND_USER = $ldap_bind_user;
+$LDAP_BIND_PASS = $ldap_bind_pass;
 
 # Fill out MySQL server info.
 $mysql = array(
