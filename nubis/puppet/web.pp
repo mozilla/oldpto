@@ -45,3 +45,15 @@ apache::vhost { $project_name:
       }
     ]
 }
+
+file { "/var/www/${project_name}/config.php":
+  source => 'puppet:///nubis/files/config.php', #lint:ignore:puppet_url_without_modules
+  owner  => 'root',
+  group  => 'root',
+  mode   => '0644',
+}
+
+include nubis_configuration
+nubis::configuration{ $project_name:
+  format  => 'php',
+}
