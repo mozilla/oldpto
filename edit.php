@@ -14,10 +14,10 @@ $is_editing = false;
 
 $data = ldap_find(
   	$connection,
-	"mail=". $_SERVER["PHP_AUTH_USER"],
+	"mail=". $GLOBAL_AUTH_USERNAME,
 	array("cn", "manager")
 );
-$notifier_email = $_SERVER["PHP_AUTH_USER"];
+$notifier_email = $GLOBAL_AUTH_USERNAME;
 $notifier_name = $data[0]["cn"][0];
 
 $manager_dn = $data[0]["manager"][0];
@@ -39,11 +39,11 @@ if (ENABLE_MANAGER_NOTIFYING) {
 if (isset($_REQUEST['id']) && $_REQUEST['id']) {
 	$data = ldap_find(
 	  	$connection,
-		"mail=". $_SERVER["PHP_AUTH_USER"],
+		"mail=". $GLOBAL_AUTH_USERNAME,
 		array("cn", "manager")
 	);
 	
-	$notifier_email = $_SERVER["PHP_AUTH_USER"];
+	$notifier_email = $GLOBAL_AUTH_USERNAME;
 	$notifier_name = $data[0]["cn"][0];
 
 	$manager_dn = $data[0]["manager"][0];

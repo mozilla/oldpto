@@ -2,7 +2,7 @@
 
 	require("prefetch.inc");
 
-	if (!in_array($_SERVER["PHP_AUTH_USER"], $export_users)) {
+	if (!in_array($GLOBAL_AUTH_USERNAME, $export_users)) {
 		include "./templates/header.php";
 		echo "You are not permitted to view this page.";
 		include "./templates/footer.php";

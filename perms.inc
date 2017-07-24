@@ -4,7 +4,7 @@ if (!defined("LIMITED_FIELDS")) {
   define("LIMITED_FIELDS", "id, person, added, hours, start, end, details");
 }
 
-$notifier_email = $_SERVER["PHP_AUTH_USER"];
+$notifier_email = $GLOBAL_AUTH_USERNAME;
 $data = ldap_find($connection, "mail=". $notifier_email, array("manager", "cn"));
 $notifier_name = $data[0]["cn"][0];
 
