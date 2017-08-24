@@ -25,6 +25,31 @@ apache::vhost { $project_name:
     # Don't set default expiry on anything
     ExpiresActive Off
 ",
+	custom_fragment    => "
+	# Clustered without coordination
+	FileETag None
+	
+	OIDCResponseType 'code' 
+	OIDCScope 'openid email profile'
+	OIDCOAuthRemoteUserClaim email 
+	OIDCRemoteUserClaim email
+	OIDCOAuthTokenExpiryClaim exp absolute mandatory
+	OIDCPassIDTokenAs claims serialized
+	OIDCOAuthTokenIntrospectionInterval 15
+	OIDCUserInfoRefreshInterval 15
+	OIDCSessionMaxDuration 0
+	OIDCSessionInactivityTimeout 43200
+",
+
+   directories        => [
+      {
+        'path'            => '/',
+        'provider'        => 'location',
+        'auth_type'       => 'openid-connect',
+        'require'         => 'valid-user',
+	},
+   ],
+
     headers            => [
       # Nubis headers
       "set X-Nubis-Version ${project_version}",
@@ -37,6 +62,7 @@ apache::vhost { $project_name:
       'set X-Frame-Options "DENY"',
       'set Strict-Transport-Security "max-age=31536000"',
     ],
+
 	rewrites           => [
       {
         comment      => 'HTTPS redirect',
@@ -51,6 +77,15 @@ file { "/var/www/${project_name}/config.php":
   owner  => 'root',
   group  => 'root',
   mode   => '0644',
+}
+
+file { '/etc/confd':
+  ensure  => directory,
+  recurse => true,
+  purge   => false,
+  owner   => 'root',
+  group   => 'root',
+  source  => 'puppet:///nubis/files/confd',
 }
 
 include nubis_configuration

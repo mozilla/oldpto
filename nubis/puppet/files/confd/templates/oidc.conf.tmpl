@@ -1,0 +1,22 @@
+# Secrets
+OIDCClientID {{ getv "/config/OpenID/Client/ID" }}
+OIDCClientSecret {{ getv "/config/OpenID/Client/Secret" }}
+
+# Genarated
+OIDCCryptoPassphrase {{ getv "/config/OpenID/Server/Passphrase" }}
+
+# Proxy
+OIDCOutgoingProxy proxy.service.consul:3128
+
+# Provider info
+OIDCProviderIssuer https://auth.{{ getv "/config/OpenID/Client/Domain" }}.auth0.com
+OIDCProviderMetadataURL https://auth.{{ getv "/config/OpenID/Client/Domain" }}.auth0.com/.well-known/openid-configuration
+OIDCProviderAuthorizationEndpoint https://auth.{{ getv "/config/OpenID/Client/Domain" }}.auth0.com/authorize
+OIDCProviderTokenEndpoint https://auth.{{ getv "/config/OpenID/Client/Domain" }}.auth0.com/oauth/token
+OIDCProviderUserInfoEndpoint https://auth.{{ getv "/config/OpenID/Client/Domain" }}.auth0.com/userinfo
+
+{{ if exists "/config/OpenID/Server/Memcached" }}
+# Session Cache
+OIDCCacheType memcache
+OIDCMemCacheServers {{ getv "/config/OpenID/Server/Memcached" }}
+{{ end }}
