@@ -1,3 +1,6 @@
+$mod_auth_openidc_version = '2.2.0'
+$libcjose_version = '0.4.1'
+
 # Install mod_auth_openidc and dependency
 package { 'libjansson4':
   ensure => installed,
