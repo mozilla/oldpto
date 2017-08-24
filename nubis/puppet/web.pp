@@ -24,8 +24,7 @@ apache::vhost { $project_name:
     custom_fragment    => "
     # Don't set default expiry on anything
     ExpiresActive Off
-",
-	custom_fragment    => "
+
 	# Clustered without coordination
 	FileETag None
 	
