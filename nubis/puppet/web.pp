@@ -49,7 +49,7 @@ apache::vhost { $project_name:
         'require'         => 'valid-user',
 	},
 	{ 
-		'path'			  => '/favicon.ico'
+		'path'			  => '/favicon.ico',
 		'provider'		  => 'location',
 		'auth_type'		  => 'None',
 		'require'		  => 'all granted',
