@@ -12,6 +12,7 @@ module "worker" {
   nubis_sudo_groups = "${var.nubis_sudo_groups}"
   nubis_user_groups = "${var.nubis_user_groups}"
   health_check_type = "EC2"
+  health_check_grace_period = "600"
 }
 
 module "load_balancer" {
