@@ -1,7 +1,7 @@
 [template]
 src = "oidc.conf.tmpl"
 dest = "/etc/apache2/conf.d/openidc.conf"
-prefix = "/nubis/%%PROJECT%%/%%ENVIRONMENT%%"
+prefix = "%%STACK%%/%%ENVIRONMENT%%"
 
 uid = 0
 gid = 0
