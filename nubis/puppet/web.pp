@@ -43,11 +43,17 @@ apache::vhost { $project_name:
 
    directories        => [
       {
-        'path'            => '/',
-        'provider'        => 'location',
+        'path'            => "/var/www/${project_name}",
+        'provider'        => 'directory',
         'auth_type'       => 'openid-connect',
         'require'         => 'valid-user',
 	},
+	{ 
+		'path'			  => '/favicon.ico'
+		'provider'		  => 'location',
+		'auth_type'		  => 'None',
+		'require'		  => 'all granted',
+	}, 
    ],
 
     headers            => [
