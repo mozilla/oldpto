@@ -2,11 +2,11 @@
 OIDCClientID {{ getv "/config/OpenID/Client/ID" }}
 OIDCClientSecret {{ getv "/config/OpenID/Client/Secret" }}
 
-# Genarated
+# Generated
 OIDCCryptoPassphrase {{ getv "/config/OpenID/Server/Passphrase" }}
 
-# Proxy
-OIDCOutgoingProxy proxy.service.consul:3128
+# RedirectURI
+OIDCRedirectURI https://{{ getv "/config/OpenID/Client/Site" }}/callback 
 
 # Provider info
 OIDCProviderIssuer https://auth.{{ getv "/config/OpenID/Client/Domain" }}.auth0.com

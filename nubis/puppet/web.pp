@@ -38,6 +38,7 @@ apache::vhost { $project_name:
 	OIDCUserInfoRefreshInterval 15
 	OIDCSessionMaxDuration 0
 	OIDCSessionInactivityTimeout 43200
+	OIDCOutgoingProxy proxy.service.consul:3128 
 ",
 
    directories        => [
