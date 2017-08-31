@@ -12,10 +12,10 @@ $LDAP_BIND_PASS = $ldap_bind_pass;
 
 # Fill out MySQL server info.
 $mysql = array(
-  "host" => "",
-  "user" => "",
-  "password" => "",
-  "database" => ""
+  "host" => "$Server",
+  "user" => "$User",
+  "password" => "$Password",
+  "database" => "$Name"
 );
 
 # Set the constants below to FALSE to do various debugging.
