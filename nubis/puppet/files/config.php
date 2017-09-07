@@ -17,11 +17,12 @@ $mysql = array(
   "password" => "$Password",
   "database" => "$Name"
 );
+$GLOBAL_AUTH_USERNAME = $_SERVER['PHP_AUTH_USER'];
 
 # Set the constants below to FALSE to do various debugging.
 define("ENABLE_MAIL", FALSE);
 define("ENABLE_DB", TRUE);
-define("ENABLE_MANAGER_NOTIFYING", TRUE);
+define("ENABLE_MANAGER_NOTIFYING", FALSE);
 
 # Set below to TRUE to see MySQL error messages and query strings sent.
 define("DEBUG_ON", FALSE);
