@@ -25,7 +25,7 @@ define("ENABLE_DB", TRUE);
 define("ENABLE_MANAGER_NOTIFYING", TRUE);
 
 # Set below to TRUE to see MySQL error messages and query strings sent.
-define("DEBUG_ON", FALSE);
+define("DEBUG_ON", TRUE);
 
 # Specify HR managers with email addresses only.
 $hr_managers = array(
