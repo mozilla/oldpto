@@ -12,10 +12,10 @@ $LDAP_BIND_PASS = $ldap_bind_pass;
 
 # Fill out MySQL server info.
 $mysql = array(
-  "host" => "$Server",
-  "user" => "$User",
-  "password" => "$Password",
-  "database" => "$Name"
+  "host" => "$Database_Server",
+  "user" => "$Database_User",
+  "password" => "$Database_Password",
+  "database" => "$Database_Name"
 );
 $GLOBAL_AUTH_USERNAME = $_SERVER['PHP_AUTH_USER'];
 
