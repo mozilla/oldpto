@@ -103,3 +103,8 @@ nubis::configuration{ $project_name:
 package { 'php5-ldap': 
 	ensure => 'latest',
 }
+
+package {
+		  'php5-mysql':	
+	ensure => 'latest', 
+}
