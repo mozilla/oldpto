@@ -29,19 +29,17 @@ define("DEBUG_ON", TRUE);
 
 # Specify HR managers with email addresses only.
 $hr_managers = array(
-  "dcoleman@mozilla.com",
+  "smani@mozilla.com",
 );
 
 # Only these people are able to view the export and report pages
 $export_users = array(
-  "dcoleman@mozilla.com",
-  "jaguilera@mozilla.com"
+  "smani@mozilla.com",
 );
 
 # Specified in RFC address format. One address per array element, please.
 $notified_people = array(
-  "Joel Aguilera <jaguilera@mozilla.com>",
-  "Doris Coleman <dcoleman@mozilla.com>"
+  "Shyam Mani Test <smani@mozilla.com>",
 );
 
 
