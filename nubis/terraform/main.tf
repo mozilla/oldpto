@@ -51,3 +51,11 @@ module "cache" {
  service_name           = "${var.service_name}"
  client_security_groups = "${module.worker.security_group}"
 }
+
+module "mail" {
+  source       = "github.com/nubisproject/nubis-terraform//mail?ref=develop"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}"
+}
