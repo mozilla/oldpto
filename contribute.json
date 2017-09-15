@@ -22,6 +22,6 @@
         "mentored": "https://bugzilla.mozilla.org/buglist.cgi?resolution=---&component=PTO&product=Webtools&f1=bug_mentor&o1=isnotempty"
     },
     "urls": {
-        "prod": "https://intranet.mozilla.org/pto/"
+        "prod": "https://pto.mozilla.org/"
     }
 }
