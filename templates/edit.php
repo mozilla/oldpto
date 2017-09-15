@@ -4,7 +4,7 @@
 	
     <p>Hello, <?php echo email_to_alias($notifier_email) ?>. 
     <?php echo $is_editing ? 'Edit' : 'Submit' ?> your PTO notification here. 
-    (<a href="https://intranet.mozilla.org/Paid_Time_Off_%28PTO%29">Learn about PTO</a>)</p>
+    (<a href="https://mana.mozilla.org/wiki/pages/viewpage.action?pageId=33100583">Learn about PTO</a>)</p>
 
 	<?php
 		if ($aErrors) {
