@@ -43,7 +43,7 @@ $notified_people = array(
 );
 
 
-# Specify addesses that are not  allowed in the additional notified people field.
+# Specify addesses that are not allowed in the additional notified people field.
 $mail_blacklist = array(
   "all@mozilla.com",
   "all-mv@mozilla.com"
