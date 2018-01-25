@@ -20,26 +20,26 @@ $mysql = array(
 $GLOBAL_AUTH_USERNAME = $_SERVER['PHP_AUTH_USER'];
 
 # Set the constants below to FALSE to do various debugging.
-define("ENABLE_MAIL", FALSE);
+define("ENABLE_MAIL", TRUE);
 define("ENABLE_DB", TRUE);
-define("ENABLE_MANAGER_NOTIFYING", TRUE);
+define("ENABLE_MANAGER_NOTIFYING", FALSE);
 
 # Set below to TRUE to see MySQL error messages and query strings sent.
 define("DEBUG_ON", TRUE);
 
 # Specify HR managers with email addresses only.
 $hr_managers = array(
-  "smani@mozilla.com",
+  "pchiasson@mozilla.com",
 );
 
 # Only these people are able to view the export and report pages
 $export_users = array(
-  "smani@mozilla.com",
+  "pchiasson@mozilla.com",
 );
 
 # Specified in RFC address format. One address per array element, please.
 $notified_people = array(
-  "Shyam Mani Test <smani@mozilla.com>",
+  "Philippe M. Chiasson <pchiasson@mozilla.com>",
 );
 
 
