@@ -21,7 +21,8 @@ module "load_balancer" {
   environment  = "${var.environment}"
   account      = "${var.account}"
   service_name = "${var.service_name}"
-  health_check_target = "HTTP:80/favicon.ico" 
+  health_check_target = "HTTP:80/favicon.ico"
+  ssl_cert_name_prefix = "${var.service_name}"
 }
 
 module "dns" {
