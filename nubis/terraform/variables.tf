@@ -9,7 +9,7 @@ variable "environment" {
 }
 
 variable "service_name" {
-  default = "skel"
+  default = "pto"
 }
 
 variable "ami" {}
