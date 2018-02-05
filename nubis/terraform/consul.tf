@@ -26,4 +26,10 @@ resource "consul_keys" "config" {
     value  = "${random_id.openid_server_passphrase.b64_url}"
     delete = true
   }
+  key {
+    name   = "openid_server_memcached"
+    path   = "${module.consul.config_prefix}/OpenID/Server/Memcached"
+    value  = "${module.cache.endpoint}"
+    delete = true
+  }
 }
