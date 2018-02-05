@@ -100,6 +100,10 @@ nubis::configuration{ $project_name:
   format  => 'php',
 }
 
+package { 'php-mail':
+  ensure => 'latest',
+}
+
 package { 'php5-ldap':
   ensure => 'latest',
 }
