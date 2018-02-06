@@ -12,4 +12,4 @@ keys = [
     "/config"
 ]
 
-reload_cmd = "/etc/init.d/apache2 reload || /etc/init.d/apache2 restart"
+reload_cmd = "/etc/init.d/apache2 reload"
