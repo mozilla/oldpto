@@ -19,6 +19,16 @@ $mysql = array(
 );
 $GLOBAL_AUTH_USERNAME = $_SERVER['PHP_AUTH_USER'];
 
+# SMTP Settings
+if ($SMTP_Server) {
+  error_log("SMTP Enabled");
+  define("ENABLE_SMTP", TRUE);
+  define("SMTP_HOST",$SMTP_Server);
+  define("SMTP_PORT", 465);
+  define("SMTP_USERNAME", $SMTP_User);
+  define("SMTP_PASSWORD", $SMTP_Password);
+}
+
 # Set the constants below to FALSE to do various debugging.
 define("ENABLE_MAIL", isset($Enable_Mail) ? $Enable_Mail : TRUE);
 define("ENABLE_DB", isset($Enable_DB) ? $Enable_DB: TRUE);
@@ -40,7 +50,7 @@ $notified_people = preg_split('/[\n\,]+/', $notified_people, 0, PREG_SPLIT_NO_EM
 $mail_blacklist = preg_split('/[\n\,]+/', $mail_blacklist, 0, PREG_SPLIT_NO_EMPTY);
 
 # Set to "submitter" to mail on behalf of the person submitting the notification
-$from = isset($mail_submitter) ? : "submitter";
+$from = isset($mail_submitter) ? $mail_submitter : "submitter";
 
 # The following template variables are available:
 # %notifier%, %hours%, %start%, %end%, %details%

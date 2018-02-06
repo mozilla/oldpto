@@ -3,6 +3,7 @@ require_once("config.php");
 require_once("pto.inc");
 require_once("auth.php");
 require_once("class.Debug.php");
+require_once("Mail.php");
 
 //Debug::showAndDie($_REQUEST);
 
@@ -212,7 +213,36 @@ if (ENABLE_MAIL) {
   );
   $enc_subject = "=?utf-8?b?" . base64_encode($subject) . "?=";
 
-  $mail_result = mail(implode(", ", $notified_people), $enc_subject, $body, implode("\r\n", $mail_headers));
+  if (ENABLE_SMTP) {
+    $mail_headers = array (
+      'From' => $from,
+      'Subject' => $subject,
+    );
+
+    $smtp = Mail::factory('smtp',
+      array (
+      'host' => SMTP_HOST,
+      'port' => 587,
+      'auth' => true,
+      'username' => SMTP_USERNAME,
+      'password' => SMTP_PASSWORD,
+      'debug'    => DEBUG_ON,
+    ));
+
+    $mail = $smtp->send(implode(", ", $notified_people), $mail_headers, $body);
+
+    if (PEAR::isError($mail)) {
+      error_log("Error sending e-mail: " . $mail->getMessage());
+      $mail_result = FALSE;
+    }
+    else {
+      $mail_result = TRUE;
+    }
+  }
+  else {
+    $mail_result = mail(implode(", ", $notified_people), $enc_subject, $body, implode("\r\n", $mail_headers));
+  }
+
 } elseif (DEBUG_ON) {
   $mail_result = FALSE;
   fb("To: ". implode(", ", $notified_people));
