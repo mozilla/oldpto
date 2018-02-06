@@ -28,29 +28,19 @@ define("ENABLE_MANAGER_NOTIFYING", isset($Enable_Manager_Notifying) ? $Enable_Ma
 define("DEBUG_ON", isset($Debug) ? $Debug : FALSE);
 
 # Specify HR managers with email addresses only.
-$hr_managers = array(
-  "pchiasson@mozilla.com",
-);
+$hr_managers = explode(',', $hr_managers);
 
 # Only these people are able to view the export and report pages
-$export_users = array(
-  "pchiasson@mozilla.com",
-);
+$export_users = explode(',', $export_users);
 
 # Specified in RFC address format. One address per array element, please.
-$notified_people = array(
-  "Philippe M. Chiasson <pchiasson@mozilla.com>",
-);
-
+$notified_people = explode(',', $notified_people);
 
 # Specify addesses that are not allowed in the additional notified people field.
-$mail_blacklist = array(
-  "all@mozilla.com",
-  "all-mv@mozilla.com"
-);
+$mail_blacklist = explode(',', $mail_blacklist);
 
 # Set to "submitter" to mail on behalf of the person submitting the notification
-$from = "submitter";
+$from = isset($mail_submitter) ? : "submitter";
 
 # The following template variables are available:
 # %notifier%, %hours%, %start%, %end%, %details%
