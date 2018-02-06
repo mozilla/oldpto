@@ -20,12 +20,12 @@ $mysql = array(
 $GLOBAL_AUTH_USERNAME = $_SERVER['PHP_AUTH_USER'];
 
 # Set the constants below to FALSE to do various debugging.
-define("ENABLE_MAIL", TRUE);
-define("ENABLE_DB", TRUE);
-define("ENABLE_MANAGER_NOTIFYING", FALSE);
+define("ENABLE_MAIL", isset($Enable_Mail) ? $Enable_Mail : TRUE);
+define("ENABLE_DB", isset($Enable_DB) ? $Enable_DB: TRUE);
+define("ENABLE_MANAGER_NOTIFYING", isset($Enable_Manager_Notifying) ? $Enable_Manager_Notifying : FALSE);
 
 # Set below to TRUE to see MySQL error messages and query strings sent.
-define("DEBUG_ON", TRUE);
+define("DEBUG_ON", isset($Debug) ? $Debug : FALSE);
 
 # Specify HR managers with email addresses only.
 $hr_managers = array(
