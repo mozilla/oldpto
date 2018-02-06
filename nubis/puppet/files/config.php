@@ -28,16 +28,16 @@ define("ENABLE_MANAGER_NOTIFYING", isset($Enable_Manager_Notifying) ? $Enable_Ma
 define("DEBUG_ON", isset($Debug) ? $Debug : FALSE);
 
 # Specify HR managers with email addresses only.
-$hr_managers = explode(',', $hr_managers);
+$hr_managers = preg_split('/\W/', $hr_managers, 0, PREG_SPLIT_NO_EMPTY);
 
 # Only these people are able to view the export and report pages
-$export_users = explode(',', $export_users);
+$export_users = preg_split('/\W/', $export_users, 0, PREG_SPLIT_NO_EMPTY);
 
 # Specified in RFC address format. One address per array element, please.
-$notified_people = explode(',', $notified_people);
+$notified_people = preg_split('/\W/', $notified_people, 0, PREG_SPLIT_NO_EMPTY);
 
 # Specify addesses that are not allowed in the additional notified people field.
-$mail_blacklist = explode(',', $mail_blacklist);
+$mail_blacklist = preg_split('/\W/', $mail_blacklist, 0, PREG_SPLIT_NO_EMPTY);
 
 # Set to "submitter" to mail on behalf of the person submitting the notification
 $from = isset($mail_submitter) ? : "submitter";
