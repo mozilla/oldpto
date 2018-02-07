@@ -1,5 +1,5 @@
 module "worker" {
-  source                    = "github.com/nubisproject/nubis-terraform//worker?ref=v2.0.1"
+  source                    = "github.com/nubisproject/nubis-terraform//worker?ref=v2.0.4"
   region                    = "${var.region}"
   environment               = "${var.environment}"
   account                   = "${var.account}"
@@ -11,12 +11,11 @@ module "worker" {
   ssh_key_name              = "${var.ssh_key_name}"
   nubis_sudo_groups         = "${var.nubis_sudo_groups}"
   nubis_user_groups         = "${var.nubis_user_groups}"
-  health_check_type         = "EC2"
   health_check_grace_period = "600"
 }
 
 module "load_balancer" {
-  source               = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.1"
+  source               = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.4"
   region               = "${var.region}"
   environment          = "${var.environment}"
   account              = "${var.account}"
@@ -26,7 +25,7 @@ module "load_balancer" {
 }
 
 module "dns" {
-  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.0.1"
+  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.0.4"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -35,7 +34,7 @@ module "dns" {
 }
 
 module "database" {
-  source                 = "github.com/nubisproject/nubis-terraform//database?ref=v2.0.1"
+  source                 = "github.com/nubisproject/nubis-terraform//database?ref=v2.0.4"
   region                 = "${var.region}"
   environment            = "${var.environment}"
   account                = "${var.account}"
@@ -45,7 +44,7 @@ module "database" {
 }
 
 module "cache" {
-  source                 = "github.com/nubisproject/nubis-terraform//cache?ref=v2.0.1"
+  source                 = "github.com/nubisproject/nubis-terraform//cache?ref=v2.0.4"
   region                 = "${var.region}"
   environment            = "${var.environment}"
   account                = "${var.account}"
