@@ -8,6 +8,9 @@ package { 'libjansson4':
 package { 'libhiredis0.13':
   ensure => installed,
 }->
+package { 'libcurl3':
+  ensure => installed,
+}->
 package { 'memcached':
   ensure => installed,
 }->
