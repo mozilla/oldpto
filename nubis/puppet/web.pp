@@ -104,11 +104,11 @@ package { 'php-mail':
   ensure => 'latest',
 }
 
-package { 'php5-ldap':
+package { 'php-ldap':
   ensure => 'latest',
 }
 
 package {
-      'php5-mysql':
+      'php-mysql':
   ensure => 'latest',
 }
