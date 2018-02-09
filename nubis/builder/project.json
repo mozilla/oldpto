@@ -5,7 +5,7 @@
     ],
     "project_description": "Mozilla PTO Application",
     "project_name": "pto",
-    "project_version": "v2.0.4_{{env `GIT_COMMIT_SHA`}}",
-    "source_ami_project_version": "v2.0.4"
+    "project_version": "v2.1.0_{{env `GIT_COMMIT_SHA`}}",
+    "source_ami_project_version": "v2.1.0"
   }
 }
