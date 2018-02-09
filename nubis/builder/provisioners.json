@@ -3,21 +3,21 @@
     {
       "type": "shell",
       "inline": [
-        "sudo mkdir -p -m 755 /var/www/pto",
-        "sudo chown ubuntu:ubuntu /var/www/pto"
+        "sudo mkdir -p -m 755 /var/www/{{user `project_name`}}",
+        "sudo chown nubis:nubis /var/www/{{user `project_name`}}"
       ],
       "order": "1"
     },
     {
       "type": "file",
       "source": "./",
-      "destination": "/var/www/pto",
+      "destination": "/var/www/{{user `project_name`}}",
       "order": "2"
     },
     {
       "type": "shell",
       "inline": [
-        "sudo chown -R root:root /var/www/pto"
+        "sudo chown -R root:root /var/www/{{user `project_name`}}"
       ],
       "order": "3"
     }
