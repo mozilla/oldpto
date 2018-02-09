@@ -29,17 +29,7 @@ apache::vhost { $project_name:
         # Clustered without coordination
         FileETag None
 
-        OIDCResponseType 'code'
-        OIDCScope 'openid email profile'
-        OIDCOAuthRemoteUserClaim email
-        OIDCRemoteUserClaim email
-        OIDCOAuthTokenExpiryClaim exp absolute mandatory
-        OIDCPassIDTokenAs claims serialized
-        OIDCOAuthTokenIntrospectionInterval 15
-        OIDCUserInfoRefreshInterval 15
-        OIDCSessionMaxDuration 0
-        OIDCSessionInactivityTimeout 43200
-        OIDCOutgoingProxy proxy.service.consul:3128
+        ${::nubis::apache::sso::custom_fragment}
   ",
 
   directories        => [
