@@ -1,36 +1,144 @@
-Old PTO
-=======
-Mozilla's old PTO app. Though I prefer the term "vintage".
+# PTO Nubis deployment repository
 
+This is the deployment repository for
+[pto.mozilla.org](https://pto.mozilla.org)
 
-Libraries Used
---------------
+## Components
 
-* [jQuery](http://jquery.com/), license: http://docs.jquery.com/Licensing
-* [jQuery UI](http://jqueryui.com/), license: http://jqueryui.com/about
-* [FirePHP](http://firephp.org/), license: http://www.firephp.org/Wiki/Main/License
+Defined in [nubis/terraform/main.tf](nubis/terraform)
 
-Installation
-------------
+### Webservers
 
-* copy config-dist.php to config.php
-* import schema.sql into your own database
-* copy config-dist.php to config.php and fill in the blanks
+Defined in [nubis/puppet/apache.pp](nubis/puppet)
 
-Note: The app requires LDAP server access. You probably need a VPN connection up and running.
+The produced image is that of a simple Ubuntu Apache webserver running PHP
 
-LDAP Assumptions
-----------------
+### Load Balancer
 
-* ``manager`` field contains a dn pointing to manager's record
-* everyone has a `manager`, with the exception of known tree roots such as the CEO
-* ``/^.*@mozilla.*$/`` can match everyone's email address
+Simple ELB
 
-Contributing
-------------
+### Email
 
-If you feel so inclined, feel free to contribute:
+This application sends outbound e-mails using SES
 
-* Bugs in Bugzilla: [Webtools :: PTO](https://bugzilla.mozilla.org/buglist.cgi?component=PTO&product=Webtools&resolution=---)
-* Code via github pull request
-* Empathy via any appropriate medium.
+### SSO
+
+This entire application is protected behind [mod_auth_openidc](https://github.com/zmartzone/mod_auth_openidc)
+
+### Database
+
+Main application state is persisted in an RDS/MySQL database
+
+Administrative access to it can be gained thru the db-admin service.
+
+### Cache
+
+Elasticache/Memcache is used to provide persistency for
+[mod_auth_openidc](https://github.com/zmartzone/mod_auth_openidc)'s session cache
+
+## Configuration
+
+The application's configuration file is
+[config.php](nubis/puppet/files/config.php)
+and is not managed, it simply sources nubis_configuration
+from */etc/nubis-config/${project_name}.php*
+
+### Consul Keys
+
+This application's Consul keys, living under
+*${project_name}-${environment}/${environment}/config/*
+and defined in Defined in [nubis/terraform/consul.tf](nubis/terraform)
+
+#### Debug
+
+*Operator Supplied* Controls an application-specific debugging mode
+
+#### export_users
+
+*Operator Supplied* List of email addresses of users allowed to export reports
+
+#### hr_managers
+
+*Operator Supplied* List of email addresses of HR managers
+
+#### mail_blacklist
+
+*Operator Supplied* List of email addresses where mail may **NOT** be sent
+
+#### mail_submitter
+
+*Operator Supplied* Full e-mail address of the sender of PTO emails
+
+#### notified_people
+
+*Operator Supplied* Full e-amil address that will always recieve PTO emails
+
+#### ldap_host
+
+*Operator Supplied* LDAP Url to connect to the server, for example
+
+```
+ldaps://ldap.company.com:636
+```
+
+#### ldal_bind_user
+
+*Operator Supplied* Bind DN to use to authenticate to the LDAP server
+
+#### ldap_bind_pass
+
+*Operator Supplied* Password to use to authenticate to the LDAP server
+
+#### Cache/Endpoint
+
+DNS endpoint of Elasticache/memcache
+
+#### Cache/Port
+
+TCP port of Elasticache/memcache
+
+The hostname of the RDS/MySQL Database
+
+#### OpenID/Server/Memcached
+
+Hostname:Port of Elasticache/memcache
+
+#### OpenID/Server/Passphrase
+
+*Generated* OpenID passphrase for session encryption
+
+#### OpenID/Client/Domain
+
+*Operator Supplied* Auth0 Domain for this application, typically 'mozilla'
+
+#### OpenID/Client/ID
+
+*Operator Supplied* Auth0 Client ID for this application
+
+#### OpenID/Client/Secret
+
+*Operator Supplied* Auth0 Client Secret for this application 'mozilla'
+
+#### OpenID/Client/Site
+
+*Operator Supplied* Auth0 Site URL for this application
+
+#### SMTP/Server
+
+SES SMTP server hostname
+
+#### SMTP/User
+
+SES SMTP username
+
+#### SMTP/Password
+
+SES SMTP password
+
+## Cron Jobs
+
+Daily backup job copies data from [Storage](#storage) to [Buckets](#buckets)
+
+## Logs
+
+No application specific logs
