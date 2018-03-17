@@ -36,7 +36,7 @@
 		      <td><label for="people">People to Notify</label><?php echo $for_this_edit ?></td>
 		      <td>
 		        <?php echo htmlentities(implode(", ", $notified_people)) ?><br />
-		        <textarea name="people" cols="80" rows="2"><?php echo $aFormValues['people'] ?></textarea><br />
+		        <input type="text" name="people" size="80" value="<?php echo $aFormValues['people'] ?>" />
 		        <input type="checkbox" name="cc" id="cc" value="1" />
 		        <label for="cc">CC me</label>
 		      </td>
