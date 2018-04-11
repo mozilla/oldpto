@@ -53,7 +53,7 @@ module "cache" {
 }
 
 module "mail" {
-  source       = "github.com/nubisproject/nubis-terraform//mail?ref=develop"
+  source       = "github.com/nubisproject/nubis-terraform//mail?ref=v2.2.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
