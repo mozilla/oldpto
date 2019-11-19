@@ -31,9 +31,9 @@ function output_json($data, $from, $to, $send_headers=TRUE) {
 			$aRecord['pto_hours'],
 			date('Y-m-d', $aRecord['start_date']),
 			date('Y-m-d', $aRecord['end_date']),
-			str_replace(' ', '&nbsp;', $aRecord['city']), 
-			$aRecord['country'],
+			$aRecord['primaryofficecountry'],
 			$aRecord['details'],
+			$aRecord['employeenumber'],
 			$sEditLink,
 			$sViewHoursDailyLink
 		);
@@ -78,8 +78,12 @@ function output_csv($data, $from, $to, $send_headers=TRUE) {
 		'Start Date',
 		'End Date',
 		'Filed Date',
+		'Details',
 		'PTO Hours',
-		'Details'
+		'First Name',
+		'Last Name',
+		'Country',
+		'Employee ID',
 	);
 	$sFields = '';
 	for ($n=0; $n<count($aFields); $n++) {
@@ -89,6 +93,7 @@ function output_csv($data, $from, $to, $send_headers=TRUE) {
 	foreach ($data as $aRecord) {
 		$aFormattedRecord = array();
 		foreach ($aRecord as $sKey=>$sValue) {
+        if($sKey == "hours_daily") {continue;}
 			switch ($sKey) {
 				case 'start_date':
 				case 'end_date':

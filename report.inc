@@ -44,8 +44,9 @@ function generate_report($results, $from_time, $to_time) {
   }
 
   $fields = LIMITED_FIELDS;
+  $queryString = "SELECT $fields FROM pto $conditions ORDER BY added DESC;";
   $query = mysql_query(
-    "SELECT $fields FROM pto $conditions ORDER BY added DESC;"
+    $queryString
   );
   $running = array();
   $results = array();
@@ -63,7 +64,7 @@ function generate_report($results, $from_time, $to_time) {
     $key = $person;
     $row["sn"] = $user_cache[$key]["sn"][0];
     $row["givenName"] = $user_cache[$key]["givenname"][0];
-    $row["location"] = $user_cache[$key]["physicaldeliveryofficename"][0];
+    $row["location"] = $user_cache[$key]["primaryofficecountry"][0];
     $results[] = $row;
   }
 

@@ -20,7 +20,6 @@ $conn =  @mysql_connect($mysql['host'], $mysql['user'], $mysql['password'])
 
 $query = "select
               added,
-              hours,
               start,
               end,
               details
@@ -67,7 +66,6 @@ include './templates/header.php';
         <thead>
             <tr>
                 <th class='datetime'>Added</th>
-                <th class='hours'>Hours</th>
                 <th class='datetime'>Start</th>
                 <th class='datetime'>End</th>
                 <th>Details</th>

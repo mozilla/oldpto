@@ -31,15 +31,10 @@ if ($aErrors) {
 	<?php endforeach; ?>
 
 	<div id="screen2">
-		<p>Please specify amount of PTO hours for each day:</p>
-		<div id="date_discriminator_panel">
-			<h5 id="date_discriminator_hours">24</h5>
-			<div>Hours of PTO</div>
-			<br />
-			<input type="submit" value="Submit" />
-		</div>
+		<p>Please specify amount of PTO you will take off for each of the following day(s):</p>
 		<div id="date_discriminator">
 		</div>
+		<input type="submit" value="Submit" />
 	</div>
 	
 </form>
@@ -137,7 +132,7 @@ if ($aErrors) {
 			var oInputs = $.SPAN({'id' : sTime},
 				$.SPAN({'class': 'date_selector'},
 					$.LABEL({'for' : 'date8_' + sTime},
-						'Full day (8hrs)'
+						'Full day'
 					),
 					$.NBSP,
 					oInputFullDay = $.INPUT(oInputFullDayParams)
@@ -147,20 +142,10 @@ if ($aErrors) {
 
 				$.SPAN({'class': 'date_selector'},
 					$.LABEL({'for' : 'date4_' + sTime},
-						'Half day (4hrs)'
+						'Half day'
 					),
 					$.NBSP,
 					oInputHalfDay = $.INPUT(oInputHalfDayParams)
-				),
-
-				' ',
-
-				$.SPAN({'class': 'date_selector'},
-					$.LABEL({'for' : 'date0_' + sTime},
-						'Work day (0hrs)'
-					),
-					$.NBSP,
-					oInputEmptyDay = $.INPUT(oInputEmptyDayParams)
 				),
 
 				' ',
@@ -213,7 +198,6 @@ if ($aErrors) {
 			if (!oTarget || !oTarget.parentNode) { return; }
 			var sTime = oTarget.parentNode.parentNode.id;
 			var sChange = oTarget.value - $('#init_' + sTime).html();
-			$('#change_' + sTime).html('(Change: ' + sChange + ' hours)');
 		}
 
 		function _updateHoursDaily() {
