@@ -47,7 +47,7 @@ if (isset($_REQUEST['id']) && $_REQUEST['id']) {
 	$notifier_name = $data[0]["cn"][0];
 
 	$manager_dn = $data[0]["manager"][0];
-	preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
+	preg_match("/mail=([a-z]+@(mozilla|pocket|getpocket).*),o=/", $a, $matches);
 	$manager_email = $matches[1];
 
 	$data = ldap_find(
