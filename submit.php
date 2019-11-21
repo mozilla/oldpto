@@ -5,6 +5,23 @@ require_once("auth.php");
 require_once("class.Debug.php");
 require_once("Mail.php");
 
+function fix_notifier_name($i_from){
+    # Per rfc 2822 these characters are illegal as part of the name section
+    $badchars = array(
+        "[",
+        "]",
+        "(",
+        ")",
+        ":",
+        ".",
+        "@",
+    );
+    foreach($badchars as $char){
+        $i_from = str_replace($char, "", $i_from);
+    }
+    return $i_from;
+}
+
 //Debug::showAndDie($_REQUEST);
 
 // Validate the input format for various fields.
@@ -56,10 +73,13 @@ $data = ldap_find(
   $connection, "mail=". $notifier_email, array("manager", "cn")
 );
 $notifier_name = $data[0]["cn"][0];
+$notifier_name = fix_notifier_name($notifier_name);
+
 
 $manager_dn = $data[0]["manager"][0];
 // "OMG, not querying LDAP for the real email? That's cheating!"
-preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
+//preg_match("/mail=([a-z]+@mozilla.*),o=/", $manager_dn, $matches);
+preg_match("/mail=([a-z]+@(mozilla|pocket|getpocket).*),o=/", $manager_dn, $matches);
 $manager_email = $matches[1];
 
 $data = ldap_find(
@@ -145,6 +165,7 @@ if ($from == "submitter") {
   $from = $notifier_name .' <'. $notifier_email .'>';
 }
 
+//$from = fix_from_address($from);
 $tokens = array(
   "%id%" => $id,
   "%notifier%" => $notifier_name,
@@ -205,43 +226,13 @@ if (ENABLE_DB) {
 //Debug::showAndDie($query_string);
   $query = mysql_query($query_string);
 }
-
 if (ENABLE_MAIL) {
   $mail_headers = array(
     'From: ' . $from,
     'Content-Type: text/plain;charset=utf-8'
   );
   $enc_subject = "=?utf-8?b?" . base64_encode($subject) . "?=";
-
-  if (ENABLE_SMTP) {
-    $mail_headers = array (
-      'From' => $from,
-      'Subject' => $subject,
-    );
-
-    $smtp = Mail::factory('smtp',
-      array (
-      'host' => SMTP_HOST,
-      'port' => 587,
-      'auth' => true,
-      'username' => SMTP_USERNAME,
-      'password' => SMTP_PASSWORD,
-      'debug'    => DEBUG_ON,
-    ));
-
-    $mail = $smtp->send(implode(", ", $notified_people), $mail_headers, $body);
-
-    if (PEAR::isError($mail)) {
-      error_log("Error sending e-mail: " . $mail->getMessage());
-      $mail_result = FALSE;
-    }
-    else {
-      $mail_result = TRUE;
-    }
-  }
-  else {
-    $mail_result = mail(implode(", ", $notified_people), $enc_subject, $body, implode("\r\n", $mail_headers));
-  }
+  $mail_result = mail(implode(", ", $notified_people), $enc_subject, $body, implode("\r\n", $mail_headers));
 
 } elseif (DEBUG_ON) {
   $mail_result = FALSE;

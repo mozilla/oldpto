@@ -112,9 +112,9 @@
 				<th width="50px">Hours</th>
 				<th width="80px">Start</th>
 				<th width="80px">End</th>
-				<th width="1%">City</th>
 				<th width="50px">Country</th>
 				<th width="15%">Details</th>
+				<th width="15%">Employee ID</th>
 				<th width="50px">Edit</th>
 				<th width="50px">View hours</th>
 			</tr>

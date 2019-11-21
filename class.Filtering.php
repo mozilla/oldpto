@@ -12,7 +12,7 @@ class Filtering {
 	    'id', 'person', 'added', 'hours', 'hours_daily', 'start', 'end', 'details'
   	);
 	public static $aLdapFields = array(
-	    'givenname', 'sn', 'physicaldeliveryofficename', 'mail'
+	    'givenname', 'sn', 'primaryofficecountry', 'primaryofficecity', 'mail', 'employeenumber'
 	);
 	
 	/************************ PRIVATE *************************/
@@ -99,7 +99,7 @@ class Filtering {
 		
 		$aFilteredRecords = array();
 		foreach ($aRecords as $aRecord) {
-			if ($sCountry   && $sCountry != strtolower($aRecord['country']))           { continue; }
+			if ($sCountry   && $sCountry != strtolower($aRecord['primaryofficecountry']))           { continue; }
 			if ($sFirstName && stristr($aRecord['first_name'], $sFirstName) === FALSE) { continue; }
 			if ($sLastName  && stristr($aRecord['last_name'],  $sLastName ) === FALSE) { continue; }
 			$aFilteredRecords[] = $aRecord;
@@ -122,24 +122,26 @@ class Filtering {
 
         foreach ($aLdapRecords as $sMail=>$aLdapRecord) {
             $sMail = strtolower($sMail);
-            if (isset($aLdapRecord['physicaldeliveryofficename'])) {
-            	list($sCity, $sCountry) = explode(':::', $aLdapRecord['physicaldeliveryofficename']);
-	    } else {
-		$sCity = NULL;
-		$sCountry = NULL;
-	    }
+            $sCountry = null;
+            $sCity = null;
+            if(isset($aLdapRecord['primaryofficecountry'])){
+                $sCountry = $aLdapRecord['primaryofficecountry'];
+            }
             $sorted_ldap[$sMail] = array(
                         'first_name' => $aLdapRecord['givenname'],
                         'last_name' => $aLdapRecord['sn'],
-                        'city' => $sCity,
-                        'country' => $sCountry
+                        'employeenumber' => $aLdapRecord['employeenumber'],
+                        'primaryofficecountry' => $sCountry
                     );
         }
 
         // Loop over all mysql records, merge in the $sorted_ldap data and append to aRecords
         foreach ($aMysqlRecords as $aMysqlRecord) {
             $sMail = strtolower($aMysqlRecord['person']);
-            $ldap_contact = $sorted_ldap[$sMail];
+            $ldap_contact = null;
+            if($sorted_ldap[$sMail]){
+                $ldap_contact = $sorted_ldap[$sMail];
+            }
             if ($ldap_contact) {
                 $aRecords[] = array(
                         'id'         => $aMysqlRecord['id'],
@@ -147,17 +149,16 @@ class Filtering {
                         'start_date' => $aMysqlRecord['start'],
                         'end_date'   => $aMysqlRecord['end'],
                         'filed_date' => $aMysqlRecord['added'],
-                        'pto_hours'  => $aMysqlRecord['hours'],
                         'details'    => $aMysqlRecord['details'],
+                        'pto_hours'  => $aMysqlRecord['hours'],
                         'first_name' => $ldap_contact['first_name'],
                         'last_name' => $ldap_contact['last_name'],
-                        'city' => $ldap_contact['city'],
-                        'country' => $ldap_contact['country'],
-                        'hours_daily'=> $aMysqlRecord['hours_daily']
+                        'primaryofficecountry' => $ldap_contact['primaryofficecountry'],
+                        'hours_daily'=> $aMysqlRecord['hours_daily'],
+                        'employeenumber'=> $ldap_contact['employeenumber']
                     );
             }
         }
-
         return self::_filterRecords($aRecords);
     }	
 
@@ -165,9 +166,8 @@ class Filtering {
 		$aLdapRecords = self::_getLdapRecords();
 		$aCountries = array();
 		foreach ($aLdapRecords as $aRecord) {
-			if (isset($aRecord['physicaldeliveryofficename'])) {
-				list($sCity, $sCountry) = explode(':::', $aRecord['physicaldeliveryofficename']);
-				if (!trim($sCountry)) { continue; }
+			if (isset($aRecord['primaryofficecountry'])) {
+                $sCountry = $aRecord['primaryofficecountry'];
 				$aCountries[$sCountry] = $sCountry;
 			}
 		}
