@@ -74,16 +74,16 @@ function output_csv($data, $from, $to, $send_headers=TRUE) {
 	}
 	$aFields = array(
 		'Id',
+		'Employee ID',
+		'First Name',
+		'Last Name',
 		'Email',
+		'PTO Hours',
 		'Start Date',
 		'End Date',
 		'Filed Date',
 		'Details',
-		'PTO Hours',
-		'First Name',
-		'Last Name',
 		'Country',
-		'Employee ID',
 	);
 	$sFields = '';
 	for ($n=0; $n<count($aFields); $n++) {

@@ -145,17 +145,17 @@ class Filtering {
             if ($ldap_contact) {
                 $aRecords[] = array(
                         'id'         => $aMysqlRecord['id'],
+                        'employeenumber'=> $ldap_contact['employeenumber'],
+                        'first_name' => $ldap_contact['first_name'],
+                        'last_name' => $ldap_contact['last_name'],
                         'email'      => $sMail,
+                        'pto_hours'  => $aMysqlRecord['hours'],
                         'start_date' => $aMysqlRecord['start'],
                         'end_date'   => $aMysqlRecord['end'],
                         'filed_date' => $aMysqlRecord['added'],
                         'details'    => $aMysqlRecord['details'],
-                        'pto_hours'  => $aMysqlRecord['hours'],
-                        'first_name' => $ldap_contact['first_name'],
-                        'last_name' => $ldap_contact['last_name'],
                         'primaryofficecountry' => $ldap_contact['primaryofficecountry'],
                         'hours_daily'=> $aMysqlRecord['hours_daily'],
-                        'employeenumber'=> $ldap_contact['employeenumber']
                     );
             }
         }
