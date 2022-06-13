@@ -27,8 +27,8 @@ function fix_notifier_name($i_from){
 // Validate the input format for various fields.
 $validations = array(
   "hours" => '/^[1-9]\d*$|^\d*\.\d$/',
-  "start" => '/^[01]\d\/[0-3]\d\/\d{4}$/',
-  "end" => '/^[01]\d\/[0-3]\d\/\d{4}$/'
+  "start" => '/^\d{4}-[01]\d-[0-3]\d$/',
+  "end" => '/^\d{4}-[01]\d-[0-3]\d$/'
 );
 $failures = array();
 foreach ($validations as $field => $pattern) {

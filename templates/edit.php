@@ -22,13 +22,13 @@
 		    <tr>
 		      <td><label for="start">Start</label></td>
 		      <td>
-		        <input type="text" id="start" name="start" size="10" autocomplete="off" value="<?php echo $aFormValues['start'] ?>" />
+		        <input type="date" id="start" name="start" autocomplete="off" value="<?php echo $aFormValues['start'] ?>" />
 		      </td>
 		    </tr>
 		    <tr>
 		      <td><label for="end">End</label></td>
 		      <td>
-		        <input type="text" id="end" name="end" size="10" autocomplete="off" value="<?php echo $aFormValues['end'] ?>" />
+		        <input type="date" id="end" name="end" autocomplete="off" value="<?php echo $aFormValues['end'] ?>" />
 		      </td>
 		    </tr>
 		    <tr>
@@ -66,14 +66,3 @@
 			font-size: 16px;
 		}
 </style>
-
-<script>
-	$(document).ready(function() {
-		$ = jQuery;
-		$('#start, #end').datepicker({
-	    	onClose: function() {  }
-	    });
-	});
-</script>
-
-	
