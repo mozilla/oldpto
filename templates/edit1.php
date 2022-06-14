@@ -5,7 +5,7 @@
 $aErrors = array();
 
 // Input data whitelist
-$step1_vars = array('id', 'start', 'end', 'people', 'cc', 'details', 'hours', 'hours_daily');
+$step1_vars = array('id', 'start', 'end', 'people', 'cc', 'details', 'hours', 'hours_daily', 'days');
 $s1data = array_fill_keys($step1_vars, '');  // Default to '' for all input data
 // Fill only expected fields with request data.
 $s1data = array_merge($s1data, array_intersect_key($_REQUEST, $s1data));
@@ -82,6 +82,7 @@ if ($aErrors) {
 		var _oOutputHours 		= $(oConfig.output_hours);
 		var _oInputHours  		= $(oConfig.input_hours);
 		var _oInputHoursDaily 	= $(oConfig.input_hours_daily);
+		var _oInputDays			= $(oConfig.input_days);
 		var _oThis        		= this;
 		
 		$('#'+oConfig.id).html(_oTable);
@@ -207,7 +208,14 @@ if ($aErrors) {
 					oData[this.name] = parseInt(this.value);
 				}
 			});
-			if (_oInputHoursDaily) { _oInputHoursDaily[0].value = encodeURIComponent($.toJSON(oData)); }
+			if (_oInputHoursDaily) {
+				_oInputHoursDaily[0].value = encodeURIComponent($.toJSON(oData));
+				let oDays = {};
+				for (let ts of Object.keys(oData)) {
+					oDays[ts] = new Date(parseInt(ts)).toDateString();
+				}
+				_oInputDays[0].value = encodeURIComponent($.toJSON(oDays));
+			}
 		}
 		
 		function _getDatesBetween(sDateStart, sDateEnd) {
@@ -249,7 +257,8 @@ if ($aErrors) {
 			end_date 		  : JSON.parse('<?php echo json_encode($s1data['end']) ?>'),
 			output_hours	  : '#date_discriminator_hours',
 			input_hours		  : '#hours',
-			input_hours_daily : '#hours_daily'
+			input_hours_daily : '#hours_daily',
+			input_days		  : '#days'
 		});
 	});
 </script>

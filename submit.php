@@ -65,6 +65,9 @@ if (((int)$_REQUEST["hours"]) < 4) {
 if (isset($_REQUEST["id"]) && $_REQUEST["id"]) {
 	$is_editing = true;
 	$id = (int)$_REQUEST["id"];
+} else {
+	$is_editing = false;
+	$id = 0;
 }
 
 
@@ -156,6 +159,7 @@ $notified_people = $allowed;
 
 $hours = (float)$_REQUEST["hours"];
 $hours_daily = isset($_REQUEST['hours_daily']) && $_REQUEST['hours_daily'] ? urldecode($_REQUEST['hours_daily']) : '{}';
+$day_names = isset($_REQUEST['days']) && $_REQUEST['days'] ? json_decode(urldecode($_REQUEST['days'])) : '{}';
 # $start_time = isset($_REQUEST["start_time"]) ? $_REQUEST["start_time"] : "00:00 am";
 # $end_time = isset($_REQUEST["end_time"]) ? $_REQUEST["end_time"] : "00:00 am";
 $start = maketime($_REQUEST["start"]);
@@ -184,6 +188,14 @@ if ($start == $end) {
   $body = $single_day_body;
   // Expand single day to a timerange of a whole day.
   $end += (1 * 60 * 60 * 24) - 1;
+} else {
+  $hours_per = "-- Hours per day:\n";
+  foreach (json_decode($hours_daily) as $ts => $hours) {
+    $date = $day_names->$ts;
+    $span = $hours == 8 ? "Full Day" : "Half Day";
+    $hours_per = "$hours_per$date : $span\n";
+  }
+  $tokens["%details%"] = $tokens["%details%"] . "\n\n" . $hours_per;
 }
 if ($is_editing) {
   $subject = $edit_subject;
