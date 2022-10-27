@@ -1,4 +1,3 @@
-
 * {
   margin: 0;
   padding: 0;
@@ -8,7 +7,7 @@
   font-style: inherit;
   text-decoration: none;
   list-style: none;
-  }
+}
 
 html {
   font: 14px "Lucida Grande", "Lucida Sans Unicode", sans-serif;
@@ -16,12 +15,12 @@ html {
   font-style: normal;
   background: url(bg.png) #67a7c7 repeat-x fixed;
   color: #fff;
-  }
+}
 
 body {
   padding: 15px;
   margin: 0;
-  }
+}
 
 h1 {
   left: 10%;
@@ -30,34 +29,34 @@ h1 {
   padding-left: 280px;
   background: url(pto.png) no-repeat;
   overflow: hidden;
-  }
+}
 
 h2 {
   font: 18px "Lucida Grande", "Lucida Sans Unicode", sans-serif;
   font-weight: bold;
-  }
+}
 
 a {
   color: #acd1e3;
-  }
+}
 
 a:hover {
   text-decoration: underline;
-  }
+}
 
 em {
   font-style: italic;
-  }
+}
 
 #page {
   width: 90%;
   margin: 0 auto;
   position: relative;
-  }
+}
 
-  #page a {
-    color: #0489B7;
-    }
+#page a {
+  color: #0489B7;
+}
 
 section {
   display: block;
@@ -69,21 +68,21 @@ section {
   -webkit-border-radius: 0.5em;
   margin-top: 1em;
   min-height: 300px;
-  }
+}
 
 input[size="10"] {
   width: 12ex;
-  }
+}
 
 p {
   margin: 0.5em 0 1em 0;
-  }
+}
 
 form ul li {
   padding-left: 1em;
   list-style-type: disc;
   list-style-position: inside;
-  }
+}
 
 span.ui-timepickr {
   background-color: #FCFDFD;
@@ -91,22 +90,22 @@ span.ui-timepickr {
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  }
+}
 
 button#filter {
   padding: 0.2em;
-  }
+}
 
 #menu {
   position: absolute;
   right: 3em;
   top: 1em;
-  }
+}
 
-  #menu li {
-    display: inline;
-    margin-left: 3em;
-    }
+    #menu li {
+      display: inline;
+      margin-left: 3em;
+      }
 
     #menu li a {
       color: #ACD1E3;
@@ -124,48 +123,48 @@ button#filter {
   cursor: default;
   }
 
-  #views li {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    }
+#views li {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
 
-    #views li.view {
-      -moz-user-select: none;
-      float: right;
-      border-right: 1px solid black;
-      margin-top: 3px;
-      }
+#views li.view {
+  -moz-user-select: none;
+  float: right;
+  border-right: 1px solid black;
+  margin-top: 3px;
+}
 
-    #views li:first-child {
-      border-right: none;
-      }
+#views li:first-child {
+  border-right: none;
+}
 
-      #views li a {
-        text-decoration: none;
-        color: black;
-        cursor: pointer;
-        padding: 0.25em;
-        }
+#views li a {
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+  padding: 0.25em;
+}
 
-      #views li a:hover {
-        background-color: #DDD;
-        }
+#views li a:hover {
+  background-color: #DDD;
+}
 
 #loading {
   display: none;
-  }
+}
 
-  #loading.loading {
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 4px;
-    height: 0;
-    padding: 0;
-    padding-top: 16px;
-    width: 16px;
-    overflow: hidden;
-    background: url(throbber.png) no-repeat;
-    }
+#loading.loading {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 4px;
+  height: 0;
+  padding: 0;
+  padding-top: 16px;
+  width: 16px;
+  overflow: hidden;
+  background: url(throbber.png) no-repeat;
+}
 
 #formats {
   background-color: #BDDCE6;
@@ -173,111 +172,112 @@ button#filter {
   padding: 0.5em 0.5em 0 1em;
   -moz-user-select: none;
   cursor: default;
-  }
+}
 
-  #formats ul {
-    display: inline;
-    }
+#formats ul {
+  display: inline;
+}
 
-    #formats ul li {
-      display: inline;
-      padding: 0.25em 1em 0.25em 1em;
-      }
+#formats ul li {
+  display: inline;
+  padding: 0.25em 1em 0.25em 1em;
+}
 
-    #formats ul li.active {
-      background-color: white;
-      border-top-left-radius: 0.4em;
-      border-top-right-radius: 0.4em;
-      -moz-border-radius-topleft: 0.4em;
-      -moz-border-radius-topright: 0.4em;
-      -webkit-border-top-left-radius: 0.4em;
-      -webkit-border-top-right-radius: 0.4em;
-      }
+#formats ul li.active {
+  background-color: white;
+  border-top-left-radius: 0.4em;
+  border-top-right-radius: 0.4em;
+  -moz-border-radius-topleft: 0.4em;
+  -moz-border-radius-topright: 0.4em;
+  -webkit-border-top-left-radius: 0.4em;
+  -webkit-border-top-right-radius: 0.4em;
+}
 
 td {
   vertical-align: top;
   padding: 0.25em;
-  }
+}
 
 tr td:first-child label {
   font-weight: bold;
-  }
+}
 
 #pto {
   padding-top: 0.25em;
   background-color: white;
   color: black
-  }
+}
 
-  #pto tr td {
-    padding: 0.3em;
-    }
+#pto tr td {
+  padding: 0.3em;
+}
 
-  #pto tbody tr:nth-child(even) {
-    background: rgba(192, 192, 192, 0.7);
-    }
+#pto tbody tr:nth-child(even) {
+  background: rgba(192, 192, 192, 0.7);
+}
 
-  #pto th {
-    background: rgba(128, 128, 128, 0.5) no-repeat right center;
-    padding-right: 24px;
-    text-align: center;
-    }
+#pto th {
+  background: rgba(128, 128, 128, 0.5) no-repeat right center;
+  padding-right: 24px;
+  text-align: center;
+}
 
-    #pto th.header {
-      cursor: pointer;
-      background-image: url(sort.gif);
-      }
-    #pto th.headerSortDown { background-image: url(desc.gif); }
-    #pto th.headerSortUp { background-image: url(asc.gif); }
-    #pto th.headerSortDown, #pto th.headerSortUp {
-      background-color: rgba(128, 128, 128, 1);
-      }
-    #pto th.action {
-      padding: 0 24px 0 24px;
-      }
+#pto th.header {
+  cursor: pointer;
+  background-image: url(sort.gif);
+}
 
-  #pto td.action,
-  #pto #no-match {
-    text-align: center;
-    }
+#pto th.headerSortDown { background-image: url(desc.gif); }
+#pto th.headerSortUp { background-image: url(asc.gif); }
+#pto th.headerSortDown, #pto th.headerSortUp {
+  background-color: rgba(128, 128, 128, 1);
+}
+#pto th.action {
+  padding: 0 24px 0 24px;
+}
+
+#pto td.action,
+#pto #no-match {
+  text-align: center;
+}
 
 .pto_table_container {
-    background-color: #fafcfc;
-    padding: 3px 10px 12px 10px !important;
+  background-color: #fafcfc;
+  padding: 3px 10px 12px 10px !important;
 }
 
 #mypto_table {
-    margin: 3px 0 5px 0;
-    background-color: #FFF;
-    border: 1px solid #DDD;
-    width: 100%;
+  margin: 3px 0 5px 0;
+  background-color: #FFF;
+  border: 1px solid #DDD;
+  width: 100%;
 }
 
 #mypto_table thead {
-    background: #fcfcfe url(../img/datatables_header_bg.jpg) bottom repeat-x;
+  background: #fcfcfe url(../img/datatables_header_bg.jpg) bottom repeat-x;
 }
 
 #mypto_table tr th {
-    text-align: left;
-    text-indent: 0.3em;
-    white-space: nowrap;
-    font-weight: bold;
-    border-bottom: 1px solid #FFF;
-    border-right: 1px solid #FFF;
+  text-align: left;
+  text-indent: 0.3em;
+  white-space: nowrap;
+  font-weight: bold;
+  border-bottom: 1px solid #FFF;
+  border-right: 1px solid #FFF;
 }
 
 #mypto_table tr td {
-    border-right: 1px solid #FFF;
+  border-right: 1px solid #FFF;
 }
 
 #mypto_table th.datetime {
-    width: 140px;
+  width: 140px;
 }
 
 #mypto_table th.hours {
-    width: 50px;
+  width: 50px;
 }
 
 #mypto_table tr.highlight {
-    background-color: #EFEFEF;
+  background-color: #EFEFEF;
 }
